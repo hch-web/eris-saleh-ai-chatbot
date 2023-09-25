@@ -7,7 +7,7 @@ const footerHeight = '30px';
 export const chatBoxPaperStyles = isMax => ({
   width: isMax ? '95vw' : '400px',
   maxWidth: isMax ? '95vw' : '400px',
-  position: 'absolute',
+  position: 'fixed',
   right: '1rem',
   bottom: '5rem',
   height: isMax ? maxBoxHeight : boxHeight,
