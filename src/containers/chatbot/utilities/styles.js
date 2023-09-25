@@ -115,6 +115,7 @@ export const feedbackBtnStyles = isActive => ({
   whiteSpace: 'nowrap',
   background: theme => (isActive ? theme.palette.primary.main : ''),
   color: theme => (isActive ? 'white' : theme.palette.primary.main),
+  border: theme => `1px solid ${theme.palette.primary.main} !important`,
 
   ':hover': {
     background: theme => (isActive ? theme.palette.primary.main : ''),

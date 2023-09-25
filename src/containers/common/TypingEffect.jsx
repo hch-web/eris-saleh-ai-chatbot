@@ -42,7 +42,11 @@ function TypingEffect({ text }) {
     };
   }, [currentIndex]);
 
-  return <Typography variant="body1" className="message">{displayText}</Typography>;
+  return (
+    <Typography variant="body1" className="message" color="black">
+      {displayText}
+    </Typography>
+  );
 }
 
 TypingEffect.propTypes = {

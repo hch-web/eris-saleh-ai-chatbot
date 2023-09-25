@@ -20,7 +20,13 @@ function MessageItem({ query, answer, type, time }) {
       )}
 
       {!isAudio &&
-        (query ? <Typography className="message" variant="body1">{query}</Typography> : <TypingEffect text={answer} />)}
+        (query ? (
+          <Typography color="white" className="message" variant="body1">
+            {query}
+          </Typography>
+        ) : (
+          <TypingEffect text={answer} />
+        ))}
 
       <Typography variant="subtitle2" fontSize={11} textAlign="end" color={query ? 'white' : 'grey'}>
         {time}
