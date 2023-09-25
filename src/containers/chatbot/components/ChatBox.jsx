@@ -34,11 +34,11 @@ function ChatBox({ isOpen, handleCloseChat }) {
   const [chatMessages, setChatMessages] = useState([]);
   const [isLoading, setLoading] = useState(false);
   const [isChat, setChat] = useState(true);
-  const [isFeedback, setFeedback] = useState(false);
-  const [isComplete, setComplete] = useState(false);
-  const [isMaximized, setMaximized] = useState(false);
+  const [isFeedbackPage, setFeedbackPage] = useState(false);
+  const [isCompletePage, setCompletePage] = useState(false);
+  const [isMaximizedPage, setMaximizedPage] = useState(false);
   const [isSettingDrawerOpen, setSettingDrawerOpen] = useState(false);
-  const [isRecording, setRecording] = useState(false);
+  const [isVoiceRecording, setVoiceRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState(null);
   const [textSize, setTextSize] = useState(14);
 
@@ -63,18 +63,18 @@ function ChatBox({ isOpen, handleCloseChat }) {
 
   const handleClose = () => {
     if (isChat) {
-      setFeedback(true);
+      setFeedbackPage(true);
       setChat(false);
     }
 
-    if (isFeedback) {
-      setFeedback(false);
+    if (isFeedbackPage) {
+      setFeedbackPage(false);
       setChat(false);
-      setComplete(true);
+      setCompletePage(true);
     }
 
-    if (isComplete && isOpen) {
-      setComplete(false);
+    if (isCompletePage && isOpen) {
+      setCompletePage(false);
       handleCloseChat();
     }
   };
@@ -98,18 +98,18 @@ function ChatBox({ isOpen, handleCloseChat }) {
     };
 
     mediaRecorder.current.start();
-    setRecording(true);
+    setVoiceRecording(true);
   };
 
   const handleStopRecording = () => {
     if (mediaRecorder.current && mediaRecorder.current.state === 'recording') {
       mediaRecorder.current.stop();
     }
-    setRecording(false);
+    setVoiceRecording(false);
   };
 
   const toggleMaximize = () => {
-    setMaximized(!isMaximized);
+    setMaximizedPage(!isMaximizedPage);
   };
 
   const toggleSettings = () => {
@@ -132,13 +132,13 @@ function ChatBox({ isOpen, handleCloseChat }) {
     <Paper
       elevation={3}
       component={motion.div}
-      sx={chatBoxPaperStyles(isMaximized)}
+      sx={chatBoxPaperStyles(isMaximizedPage)}
       {...chatBoxAnimationProps}
     >
       <Box height={1} sx={{ position: 'relative' }}>
         {/* HEADER */}
         <ChatHeader
-          isMaximized={isMaximized}
+          isMaximized={isMaximizedPage}
           toggleSettings={toggleSettings}
           handleClose={handleClose}
           toggleMaximize={toggleMaximize}
@@ -158,12 +158,12 @@ function ChatBox({ isOpen, handleCloseChat }) {
         </AnimatePresence>
 
         {/* FEEDBACK COMPONENT */}
-        {isFeedback && <FeedbackPage handleClose={handleClose} isMaximized={isMaximized} />}
+        {isFeedbackPage && <FeedbackPage handleClose={handleClose} isMaximized={isMaximizedPage} />}
 
-        {isComplete && <CompletePage />}
+        {isCompletePage && <CompletePage />}
 
         {/* CHAT COMPONENT */}
-        {isChat && !isFeedback && (
+        {isChat && !isFeedbackPage && (
           <Box
             sx={{
               display: 'flex',
@@ -176,10 +176,10 @@ function ChatBox({ isOpen, handleCloseChat }) {
               id="chatbot-cont-wrapper"
               padding={1}
               width={1}
-              sx={chatBoxMessageWrapperStyles(isMaximized)}
+              sx={chatBoxMessageWrapperStyles(isMaximizedPage)}
             >
               <Box sx={chatBoxMessagesBox(textSize)}>
-                {chatMessages?.map((item, idx) => (
+                {chatMessages?.map((item, idx, arr) => (
                   <MessageItem
                     // eslint-disable-next-line react/no-array-index-key
                     key={idx}
@@ -187,6 +187,7 @@ function ChatBox({ isOpen, handleCloseChat }) {
                     answer={item?.answer}
                     query={item?.query}
                     time={item?.timestamp}
+                    isLast={idx === arr.length - 1}
                   />
                 ))}
 
@@ -225,10 +226,10 @@ function ChatBox({ isOpen, handleCloseChat }) {
                       <FormikField
                         name="message"
                         placeholder="Ask anything..."
-                        disabled={!!audioBlob || !!isRecording}
+                        disabled={!!audioBlob || !!isVoiceRecording}
                       />
 
-                      {!isRecording ? (
+                      {!isVoiceRecording ? (
                         <IconButton onClick={handleStartRecording}>
                           <MicNoneOutlined fontSize="small" />
                         </IconButton>

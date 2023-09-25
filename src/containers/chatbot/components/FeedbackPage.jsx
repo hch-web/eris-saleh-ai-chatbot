@@ -4,7 +4,7 @@ import { v4 } from 'uuid';
 import { Send } from '@mui/icons-material';
 import propTypes from 'prop-types';
 
-import { feedbackBoxStyles, feedbackBtnStyles, feedbackResolveBtnStyles } from '../utilities/styles';
+import { feedbackBackBtnStyles, feedbackBoxStyles, feedbackBtnStyles } from '../utilities/styles';
 import { feedbackBtnData } from '../utilities/data';
 
 function FeedbackPage({ isMaximized, handleClose }) {
@@ -55,27 +55,21 @@ function FeedbackPage({ isMaximized, handleClose }) {
 
       <Divider />
 
-      <Box p={2}>
-        <Typography variant="h6" mb={2}>
-          Did We Resolve Your Issue?
-        </Typography>
+      <Stack p={2} direction="row" alignItems="center" justifyContent="center" spacing={2}>
+        <Button variant="contained" size="small" sx={feedbackBackBtnStyles}>
+          Back to Chat
+        </Button>
 
-        <Stack direction="row" alignItems="center" justifyContent="center" spacing={2}>
-          <Button variant="contained">Yes</Button>
-
-          <Button variant="contained" sx={feedbackResolveBtnStyles}>
-            No
-          </Button>
-        </Stack>
-      </Box>
-
-      <Divider />
-
-      <Box p={2} textAlign="center">
-        <Button variant="contained" startIcon={<Send />} onClick={handleClose}>
+        <Button
+          variant="contained"
+          size="small"
+          sx={{ textTransform: 'capitalize' }}
+          startIcon={<Send />}
+          onClick={handleClose}
+        >
           Send Your Feedback!
         </Button>
-      </Box>
+      </Stack>
     </Box>
   );
 }

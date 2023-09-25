@@ -2,14 +2,14 @@ import React, { memo, useEffect, useState } from 'react';
 import { Typography } from '@mui/material';
 import propTypes from 'prop-types';
 
-function TypingEffect({ text }) {
+function TypingEffect({ text, stopAnimation, setStopAnimation }) {
   const [displayText, setDisplayText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoScrollEnabled, setAutoScrollEnabled] = useState(true);
 
   // eslint-disable-next-line consistent-return
   useEffect(() => {
-    if (text && currentIndex < text?.length) {
+    if (text && currentIndex < text?.length && !stopAnimation) {
       const timer = setTimeout(() => {
         setDisplayText(prevState => prevState + text[currentIndex]);
         setCurrentIndex(prevState => prevState + 1);
@@ -19,6 +19,8 @@ function TypingEffect({ text }) {
         clearTimeout(timer);
       };
     }
+
+    setStopAnimation(true);
   }, [currentIndex, text]);
 
   useEffect(() => {
@@ -50,6 +52,8 @@ function TypingEffect({ text }) {
 }
 
 TypingEffect.propTypes = {
+  stopAnimation: propTypes.bool.isRequired,
+  setStopAnimation: propTypes.func.isRequired,
   text: propTypes.string,
 };
 

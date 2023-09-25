@@ -122,11 +122,13 @@ export const feedbackBtnStyles = isActive => ({
   },
 });
 
-export const feedbackResolveBtnStyles = {
-  background: '#e3e3e3',
-  color: 'black',
+export const feedbackBackBtnStyles = {
+  background: 'grey',
+  color: 'white',
+  textTransform: 'capitalize',
+
   ':hover': {
-    background: '#dadada',
+    background: 'grey',
   },
 };
 
@@ -154,7 +156,6 @@ export const footerStyles = {
 };
 
 export const chatMessageStyles = (isSentByMe, isAudio) => ({
-  alignSelf: isSentByMe ? 'flex-end' : 'flex-start',
   padding: '4px 8px',
   background: theme => (isSentByMe ? theme.palette.primary.main : '#efefef'),
   color: isSentByMe ? 'white' : 'black',
@@ -213,4 +214,17 @@ export const chatPropmtBoxStyles = {
     background: '#dadada',
     color: theme => theme.palette.primary.main,
   },
+};
+
+export const proActiveBoxStyles = {
+  padding: '8px 12px',
+  fontWeight: 'bold',
+  fontSize: '13px',
+  color: '#222222 !important',
+  background: 'white',
+  borderRadius: '20px 20px 0 20px',
+  position: 'fixed',
+  right: '1.5rem',
+  bottom: '5rem',
+  zIndex: '999999999999',
 };

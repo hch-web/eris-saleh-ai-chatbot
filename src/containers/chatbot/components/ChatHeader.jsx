@@ -17,9 +17,15 @@ function ChatHeader({ handleClose, isMaximized, toggleMaximize, toggleSettings }
       <Stack direction="row" spacing={1} alignItems="center">
         <Avatar src="https://besportal.s3.amazonaws.com/media/invoice_docs/logo-280px.jpg" alt="Eris" />
 
-        <Typography color="white" variant="body1">
-          Eris AI
-        </Typography>
+        <Stack>
+          <Typography color="white" variant="body1">
+            Eris AI
+          </Typography>
+
+          <Typography color="white" variant="caption">
+            Lets chat - we&apos;re online
+          </Typography>
+        </Stack>
       </Stack>
 
       <Stack direction="row" alignItems="center">

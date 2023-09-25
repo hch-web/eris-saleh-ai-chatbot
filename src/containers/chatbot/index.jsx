@@ -14,7 +14,7 @@ function ChatBot() {
   };
 
   return (
-    <Box>
+    <Box className="chat-main-container">
       <AnimatePresence>
         {isChatOpen && <ChatBox isOpen={isChatOpen} handleCloseChat={toggleChatBox} />}
       </AnimatePresence>

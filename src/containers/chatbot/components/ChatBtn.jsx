@@ -2,21 +2,33 @@ import React from 'react';
 import { MoreHoriz, Textsms } from '@mui/icons-material';
 import { Box, IconButton } from '@mui/material';
 import propTypes from 'prop-types';
+import { AnimatePresence, motion } from 'framer-motion';
 
 // STYLES
-import { chatBtnStyles, chatBtnWrapperStyles } from '../utilities/styles';
+import { chatBtnStyles, chatBtnWrapperStyles, proActiveBoxStyles } from '../utilities/styles';
+import { proActiveBoxAnimationProps } from '../utilities/animations';
 
 function ChatBtn({ handleClick, isOpen }) {
   return (
-    <Box sx={chatBtnWrapperStyles}>
-      <IconButton size="large" onClick={handleClick} sx={chatBtnStyles}>
-        {isOpen ? (
-          <MoreHoriz sx={{ color: 'white', fontSize: '30px' }} />
-        ) : (
-          <Textsms sx={{ color: 'white', fontSize: '30px' }} />
+    <>
+      <AnimatePresence>
+        {!isOpen && (
+          <Box component={motion.div} sx={proActiveBoxStyles} {...proActiveBoxAnimationProps}>
+            Welcome to Eris AI, ask me anything
+          </Box>
         )}
-      </IconButton>
-    </Box>
+      </AnimatePresence>
+
+      <Box sx={chatBtnWrapperStyles}>
+        <IconButton size="large" onClick={handleClick} sx={chatBtnStyles}>
+          {isOpen ? (
+            <MoreHoriz sx={{ color: 'white', fontSize: '30px' }} />
+          ) : (
+            <Textsms sx={{ color: 'white', fontSize: '30px' }} />
+          )}
+        </IconButton>
+      </Box>
+    </>
   );
 }
 
