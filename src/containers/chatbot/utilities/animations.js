@@ -9,9 +9,3 @@ export const proActiveBoxAnimationProps = {
   animate: { opacity: 1 },
   exit: { opacity: 0 },
 };
-
-export const respBtnsAnimationProps = {
-  initial: { opacity: 0 },
-  animate: { opacity: 1 },
-  exit: { opacity: 0 },
-};

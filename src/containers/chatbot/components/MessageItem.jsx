@@ -1,13 +1,11 @@
 import React, { memo, useState } from 'react';
 import { Box, Button, IconButton, Stack, Typography } from '@mui/material';
 import { ThumbDownOutlined, ThumbUpOutlined } from '@mui/icons-material';
-import { AnimatePresence, motion } from 'framer-motion';
 import propTypes from 'prop-types';
 
 // COMPONENTS & UTILITIES
 import TypingEffect from 'containers/common/TypingEffect';
-import { chatMessageStyles } from '../utilities/styles';
-import { respBtnsAnimationProps } from '../utilities/animations';
+import { chatMessageStyles, msgRespButtonStyles } from '../utilities/styles';
 
 function MessageItem({ query, answer, type, time, isLast }) {
   const isSentByMe = !!query;
@@ -65,36 +63,17 @@ function MessageItem({ query, answer, type, time, isLast }) {
       </Stack>
 
       <Stack direction="row" gap={2}>
-        <AnimatePresence mode="popLayout">
-          {!isAnimationCompleted && !isSentByMe && (
-            <Button
-              // key={isAnimationCompleted}
-              component={motion.button}
-              variant="outlined"
-              size="small"
-              sx={{ fontSize: 12, textTransform: 'capitalize' }}
-              onClick={handleStopAnimation}
-              {...respBtnsAnimationProps}
-            >
-              Stop Generating
-            </Button>
-          )}
-        </AnimatePresence>
+        {!isAnimationCompleted && !isSentByMe && (
+          <Button variant="outlined" size="small" sx={msgRespButtonStyles} onClick={handleStopAnimation}>
+            Stop Generating
+          </Button>
+        )}
 
-        <AnimatePresence mode="popLayout">
-          {isAnimationCompleted && !isSentByMe && isLast && (
-            <Button
-              key={isLast}
-              // component={motion.button}
-              variant="outlined"
-              size="small"
-              sx={{ fontSize: 12, textTransform: 'capitalize' }}
-              {...respBtnsAnimationProps}
-            >
-              Regenerate
-            </Button>
-          )}
-        </AnimatePresence>
+        {isAnimationCompleted && !isSentByMe && isLast && (
+          <Button key={isLast} variant="outlined" size="small" sx={msgRespButtonStyles}>
+            Regenerate
+          </Button>
+        )}
       </Stack>
     </>
   );

@@ -228,3 +228,9 @@ export const proActiveBoxStyles = {
   bottom: '5rem',
   zIndex: '999999999999',
 };
+
+export const msgRespButtonStyles = {
+  fontSize: 12,
+  textTransform: 'capitalize',
+  border: theme => `1px solid ${theme.palette.primary.main}`,
+};
