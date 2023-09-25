@@ -138,9 +138,10 @@ export const footerStyles = {
   bottom: 0,
 
   '@media screen and (max-width: 580px)': {
-    '& .p': {
+    height: '27px',
+
+    '& p': {
       fontSize: '11px',
-      height: '25px',
     },
   },
 
