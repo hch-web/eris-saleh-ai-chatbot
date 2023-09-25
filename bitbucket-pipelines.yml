@@ -1,7 +1,7 @@
 image: python:3.11.2
 pipelines:
   branches:
-    main:
+    master:
       - step:
           script:
             - ssh ubuntu@157.241.54.34 /home/ubuntu/eris-ai-frontend/devCdScript.sh
