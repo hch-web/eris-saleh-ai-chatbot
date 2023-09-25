@@ -15,6 +15,7 @@ export const chatBoxPaperStyles = isMax => ({
   borderRadius: '10px',
   overflow: 'hidden',
   transition: '0.2s ease-in-out',
+  zIndex: '999999999999',
 
   '@media (max-width: 580px)': {
     width: isMax ? '95vw' : '75vw',
