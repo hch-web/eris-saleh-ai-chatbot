@@ -1,0 +1,26 @@
+.fieldWrapper {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  .field {
+    width: 100%;
+    border-radius: 5px;
+    border: none;
+    padding: 8px;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.3s ease-in-out;
+    background: #f8f8f8;
+    min-height: 42px;
+    max-height: 56px;
+    resize: none;
+    overflow-y: hidden;
+    font-family: Arial, sans-serif;
+
+    &::placeholder {
+      color: #a0a0a0;
+    }
+  }
+}
