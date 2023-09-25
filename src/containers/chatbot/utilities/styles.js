@@ -1,7 +1,7 @@
 const boxHeight = '500px';
 const maxBoxHeight = '80vh';
 const headHeight = '56px';
-const formHeight = '96px';
+const formHeight = '104px';
 const footerHeight = '30px';
 
 export const chatBoxPaperStyles = isMax => ({
@@ -206,6 +206,7 @@ export const chatPropmtBoxStyles = {
   borderRadius: '3px',
   userSelect: 'none',
   whiteSpace: 'nowrap',
+  lineHeight: '18px',
 
   ':hover': {
     background: '#dadada',

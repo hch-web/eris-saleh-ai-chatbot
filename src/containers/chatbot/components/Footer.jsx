@@ -5,7 +5,7 @@ import { footerStyles } from '../utilities/styles';
 function Footer() {
   return (
     <>
-      <Divider />
+      <Divider sx={{ width: '100%' }} />
 
       <Box sx={footerStyles}>
         <Typography variant="body2" textAlign="center">
