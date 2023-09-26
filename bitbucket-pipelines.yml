@@ -3,5 +3,9 @@ pipelines:
   branches:
     master:
       - step:
+          name: "code deploying"
           script:
             - ssh ubuntu@157.241.54.34 /home/ubuntu/eris-ai-frontend/devCdScript.sh
+
+      - step:
+          name: "successfully Deployed"
