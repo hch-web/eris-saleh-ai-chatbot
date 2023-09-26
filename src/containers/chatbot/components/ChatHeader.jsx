@@ -32,7 +32,7 @@ function ChatHeader({ handleClose, isMaximized, toggleMaximize, toggleSettings }
 
       <Stack direction="row" alignItems="center">
         <Tooltip title="Open Whatsapp Chat">
-          <IconButton component="a" href="https://wa.me/+971506960126" target="_blank">
+          <IconButton component="a" href="https://wa.me/+971566579439" target="_blank">
             <WhatsApp sx={chatBoxHeaderBtnStyles} />
           </IconButton>
         </Tooltip>

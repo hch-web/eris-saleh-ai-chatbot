@@ -2,7 +2,7 @@ const boxHeight = '500px';
 const maxBoxHeight = '80vh';
 const headHeight = '60px';
 const formHeight = '104px';
-const footerHeight = '30px';
+const footerHeight = '28px';
 
 export const chatBoxPaperStyles = isMax => ({
   width: isMax ? '95vw' : '400px',
