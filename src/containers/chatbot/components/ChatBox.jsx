@@ -130,6 +130,7 @@ function ChatBox({ isOpen, handleCloseChat }) {
   const handleRegenerate = () => {
     setLoading(true);
     socket.send(JSON.stringify({ query: recentQuery, type: 'text' }));
+    messageRef.current.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleBackToChat = () => {
@@ -176,9 +177,7 @@ function ChatBox({ isOpen, handleCloseChat }) {
 
         {isCompletePage && <CompletePage />}
 
-        {isHumanAgentPage && (
-          <HumanAgentPage handleCancel={handleBackToChat} />
-        )}
+        {isHumanAgentPage && <HumanAgentPage handleCancel={handleBackToChat} />}
 
         {/* CHAT COMPONENT */}
         <Box sx={chatPageStyles(isChatPage && !isFeedbackPage)}>

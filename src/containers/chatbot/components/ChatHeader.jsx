@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { Avatar, IconButton, Stack, Tooltip, Typography, useMediaQuery } from '@mui/material';
+import { Avatar, IconButton, Stack, Typography, useMediaQuery } from '@mui/material';
 import { CropFree, HighlightOff, SettingsOutlined, WhatsApp } from '@mui/icons-material';
 import propTypes from 'prop-types';
 
@@ -21,7 +21,7 @@ function ChatHeader({ handleClose, isMaximized, toggleMaximize, toggleSettings }
 
         <Stack>
           <Typography color="white" variant="body1">
-            Eris AI
+            ERIS AI
           </Typography>
 
           <Typography color="white" variant="caption">
@@ -31,31 +31,28 @@ function ChatHeader({ handleClose, isMaximized, toggleMaximize, toggleSettings }
       </Stack>
 
       <Stack direction="row" alignItems="center">
-        <Tooltip title="Open Whatsapp Chat">
-          <IconButton component="a" href="https://wa.me/+971566579439" target="_blank">
-            <WhatsApp sx={chatBoxHeaderBtnStyles} />
-          </IconButton>
-        </Tooltip>
+        <IconButton
+          title="Open Whatsapp Chat"
+          component="a"
+          href="https://wa.me/+971566579439"
+          target="_blank"
+        >
+          <WhatsApp sx={chatBoxHeaderBtnStyles} />
+        </IconButton>
 
-        <Tooltip title="Settings" onClick={toggleSettings}>
-          <IconButton>
-            <SettingsOutlined sx={chatBoxHeaderBtnStyles} />
-          </IconButton>
-        </Tooltip>
+        <IconButton title="Settings" onClick={toggleSettings}>
+          <SettingsOutlined sx={chatBoxHeaderBtnStyles} />
+        </IconButton>
 
         {!isMobileDevice && (
-          <Tooltip title={isMaximized ? 'Minimize' : 'Maximize'}>
-            <IconButton onClick={toggleMaximize}>
-              <CropFree sx={chatBoxHeaderBtnStyles} />
-            </IconButton>
-          </Tooltip>
+          <IconButton title={isMaximized ? 'Minimize' : 'Maximize'} onClick={toggleMaximize}>
+            <CropFree sx={chatBoxHeaderBtnStyles} />
+          </IconButton>
         )}
 
-        <Tooltip title="Close">
-          <IconButton onClick={handleClose}>
-            <HighlightOff sx={chatBoxHeaderBtnStyles} />
-          </IconButton>
-        </Tooltip>
+        <IconButton title="Close" onClick={handleClose}>
+          <HighlightOff sx={chatBoxHeaderBtnStyles} />
+        </IconButton>
       </Stack>
     </Stack>
   );

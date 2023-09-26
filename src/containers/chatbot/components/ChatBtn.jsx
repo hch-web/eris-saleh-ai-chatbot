@@ -14,7 +14,7 @@ function ChatBtn({ handleClick, isOpen }) {
       <AnimatePresence>
         {!isOpen && (
           <Box component={motion.div} sx={proActiveBoxStyles} {...proActiveBoxAnimationProps}>
-            Welcome to Eris AI, ask me anything
+            Welcome, ask me anything!
           </Box>
         )}
       </AnimatePresence>
