@@ -11,6 +11,8 @@ else
   exit 1;
 fi
 
+npm run deploy
+
 sudo rm /var/www/html/scripts/bundle.js
 
 sudo cp /home/ubuntu/eris-ai-frontend/bundle/bundle.js /var/www/html/scripts
