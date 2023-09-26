@@ -105,6 +105,9 @@ export const loadingMessageStyles = {
 export const feedbackBoxStyles = isMax => ({
   height: `calc(${isMax ? maxBoxHeight : boxHeight} - ${headHeight})`,
   overflowY: 'auto',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
   ...scrollStyles,
 
   '@media screen and (max-width: 580px)': {
@@ -260,6 +263,7 @@ export const proActiveBoxStyles = {
   right: '1.5rem',
   bottom: '5rem',
   zIndex: '999999999999',
+  boxShadow: '0 0 10px grey'
 };
 
 export const msgRespButtonStyles = {

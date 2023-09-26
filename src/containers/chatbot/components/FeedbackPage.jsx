@@ -26,7 +26,7 @@ function FeedbackPage({ isMaximized, handleClose, handleBackToChat }) {
         <Rating name="Rating" defaultValue={0} />
       </Box>
 
-      <Divider />
+      <Divider flexItem />
 
       <Box p={2}>
         <Typography variant="h6" mb={2}>
@@ -53,9 +53,9 @@ function FeedbackPage({ isMaximized, handleClose, handleBackToChat }) {
         </Grid>
       </Box>
 
-      <Divider />
+      <Divider flexItem />
 
-      <Stack p={2} direction="row" alignItems="center" justifyContent="center" spacing={2}>
+      <Stack p={2} direction="row" alignItems="center" justifyContent="center" spacing={2} flexGrow={1}>
         <Button variant="contained" size="small" sx={feedbackBackBtnStyles} onClick={handleBackToChat}>
           Back to Chat
         </Button>
