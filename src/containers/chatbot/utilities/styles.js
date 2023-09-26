@@ -18,8 +18,12 @@ export const chatBoxPaperStyles = isMax => ({
   zIndex: '999999999999',
 
   '@media (max-width: 580px)': {
-    width: isMax ? '95vw' : '75vw',
-    maxWidth: isMax ? '95vw' : '75vw',
+    // width: isMax ? '95vw' : '75vw',
+    // maxWidth: isMax ? '95vw' : '75vw',
+    width: '95vw',
+    maxWidth: '95vw',
+    height: maxBoxHeight,
+    maxHeight: maxBoxHeight,
     right: 0,
     margin: '0 10px',
   },
@@ -40,7 +44,10 @@ export const chatBtnStyles = {
   },
 };
 
-export const chatBoxHeaderBtnStyles = { color: 'white' };
+export const chatBoxHeaderBtnStyles = {
+  color: 'white',
+  '@media screen and (max-width: 768px)': { fontSize: '22px' },
+};
 
 export const chatFormStackStyles = { background: '#f8f8f8', padding: '6px' };
 
@@ -71,6 +78,11 @@ export const chatBoxMessageWrapperStyles = isMax => ({
   overflowY: 'auto',
 
   ...scrollStyles,
+
+  '@media screen and (max-width: 580px)': {
+    maxHeight: `calc(${maxBoxHeight} - ${headHeight} - ${formHeight} - ${footerHeight})`,
+    height: `calc(${maxBoxHeight} - ${headHeight} - ${formHeight} - ${footerHeight})`,
+  },
 });
 
 export const chatBoxMessagesBox = textSize => ({
@@ -94,6 +106,10 @@ export const feedbackBoxStyles = isMax => ({
   height: `calc(${isMax ? maxBoxHeight : boxHeight} - ${headHeight})`,
   overflowY: 'auto',
   ...scrollStyles,
+
+  '@media screen and (max-width: 580px)': {
+    height: `calc(${maxBoxHeight} - ${headHeight})`,
+  },
 });
 
 export const completeBoxStyles = isMax => ({
@@ -103,6 +119,23 @@ export const completeBoxStyles = isMax => ({
   alignItems: 'center',
   justifyContent: 'center',
   gap: '30px',
+
+  '@media screen and (max-width: 580px)': {
+    height: `calc(${maxBoxHeight} - ${headHeight})`,
+  },
+});
+
+export const humanAgentBoxStyles = isMax => ({
+  height: `calc(${isMax ? maxBoxHeight : boxHeight} - ${headHeight})`,
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '20px',
+
+  '@media screen and (max-width: 580px)': {
+    height: `calc(${maxBoxHeight} - ${headHeight})`,
+  },
 });
 
 export const feedbackBtnStyles = isActive => ({
@@ -234,3 +267,13 @@ export const msgRespButtonStyles = {
   textTransform: 'capitalize',
   border: theme => `1px solid ${theme.palette.primary.main}`,
 };
+
+export const msgFeedbackButtonStyles = {
+  fontSize: 12,
+};
+
+export const chatPageStyles = isOpen => ({
+  display: isOpen ? 'flex' : 'none',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+});

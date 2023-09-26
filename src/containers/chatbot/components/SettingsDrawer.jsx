@@ -1,19 +1,25 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   Close,
   DeleteOutlined,
   EmailOutlined,
+  ExpandLess,
+  ExpandMore,
   SupportAgentOutlined,
+  TextDecrease,
+  TextIncrease,
   TitleOutlined,
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import {
+  Collapse,
   Divider,
   IconButton,
   List,
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Slider,
   Stack,
   Typography,
 } from '@mui/material';
@@ -23,20 +29,33 @@ import { saveAs } from 'file-saver';
 
 // COMPONENTS
 import DownloadChat from '../pdf';
+// import { textSizeSliderMarks } from '../utilities/data';
 
-function SettingsDrawer({ toggleSettings, handleClearChat, handleUpdateTextSize, chatMessages }) {
-  const handleDownloadChat = async () => {
+function SettingsDrawer({
+  toggleSettings,
+  handleClearChat,
+  handleUpdateTextSize,
+  chatMessages,
+  textSize,
+  handleOpenHumanAgentPage,
+}) {
+  const [isTextSliderOpen, setTextSliderOpen] = useState(false);
+
+  const handleDownloadChat = useCallback(async () => {
     if (chatMessages?.length > 0) {
       const doc = <DownloadChat chatMessages={chatMessages} />;
       const pdfBlob = await pdf(doc).toBlob();
       const blobURL = URL.createObjectURL(pdfBlob);
       saveAs(blobURL, 'Chat');
     }
+  }, [chatMessages]);
 
-    // const doc = <ExportPdfSalaries salaries={data?.results} />;
-    // const pdfBlob = await pdf(doc).toBlob();
-    // const blobURL = URL.createObjectURL(pdfBlob);
-    // saveAs(blobURL, 'Salaries');
+  const toggleCollapseText = () => {
+    setTextSliderOpen(prevState => !prevState);
+  };
+
+  const handleChangeSlider = (e, newValue) => {
+    handleUpdateTextSize(newValue);
   };
 
   return (
@@ -78,15 +97,35 @@ function SettingsDrawer({ toggleSettings, handleClearChat, handleUpdateTextSize,
           <ListItemText primary="Clear Conversation" />
         </ListItemButton>
 
-        <ListItemButton onClick={handleUpdateTextSize}>
+        <ListItemButton onClick={toggleCollapseText}>
           <ListItemIcon>
             <TitleOutlined />
           </ListItemIcon>
 
           <ListItemText primary="Text Size" />
+
+          {isTextSliderOpen ? <ExpandLess /> : <ExpandMore />}
         </ListItemButton>
 
-        <ListItemButton>
+        <Collapse in={isTextSliderOpen} orientation="vertical">
+          <Stack direction="row" gap={3} alignItems="center" px={2} py={2}>
+            <TextDecrease fontSize="small" />
+
+            <Slider
+              value={textSize}
+              onChange={handleChangeSlider}
+              step={1}
+              marks
+              min={12}
+              max={18}
+              valueLabelDisplay="auto"
+            />
+
+            <TextIncrease fontSize="small" />
+          </Stack>
+        </Collapse>
+
+        <ListItemButton onClick={handleOpenHumanAgentPage}>
           <ListItemIcon>
             <SupportAgentOutlined />
           </ListItemIcon>
@@ -114,6 +153,8 @@ SettingsDrawer.propTypes = {
   toggleSettings: propTypes.func.isRequired,
   handleClearChat: propTypes.func.isRequired,
   handleUpdateTextSize: propTypes.func.isRequired,
+  handleOpenHumanAgentPage: propTypes.func.isRequired,
+  textSize: propTypes.number.isRequired,
   chatMessages: propTypes.array,
 };
 

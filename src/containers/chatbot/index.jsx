@@ -7,7 +7,7 @@ import ChatBtn from './components/ChatBtn';
 import ChatBox from './components/ChatBox';
 
 function ChatBot() {
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(true);
 
   const toggleChatBox = () => {
     setIsChatOpen(!isChatOpen);

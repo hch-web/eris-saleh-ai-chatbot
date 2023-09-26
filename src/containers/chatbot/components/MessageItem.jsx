@@ -1,20 +1,34 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useMemo, useState } from 'react';
 import { Box, Button, IconButton, Stack, Typography } from '@mui/material';
-import { ThumbDownOutlined, ThumbUpOutlined } from '@mui/icons-material';
+import { ThumbDown, ThumbDownOutlined, ThumbUp, ThumbUpOutlined } from '@mui/icons-material';
 import propTypes from 'prop-types';
 
 // COMPONENTS & UTILITIES
 import TypingEffect from 'containers/common/TypingEffect';
-import { chatMessageStyles, msgRespButtonStyles } from '../utilities/styles';
+import { chatMessageStyles, msgFeedbackButtonStyles, msgRespButtonStyles } from '../utilities/styles';
 
-function MessageItem({ query, answer, type, time, isLast }) {
+function MessageItem({ query, answer, type, time, isLast, handleRegenerate }) {
+  const [isAnimationCompleted, setAnimationCompleted] = useState(!!query);
+  const [msgFeedback, setMsgFeedback] = useState(null);
+  const [isRegenerating, setRegenerating] = useState(false);
   const isSentByMe = !!query;
   const isAudio = type === 'audio';
-  const [isAnimationCompleted, setAnimationCompleted] = useState(false);
 
   const handleStopAnimation = () => {
     setAnimationCompleted(true);
   };
+
+  const handleMsgFeedback = val => () => {
+    setMsgFeedback(val);
+  };
+
+  const handleRegenerating = () => {
+    setRegenerating(true);
+    handleRegenerate();
+  };
+
+  const isRespGood = useMemo(() => msgFeedback === true, [msgFeedback]);
+  const isRespBad = useMemo(() => msgFeedback === false, [msgFeedback]);
 
   return (
     <>
@@ -30,7 +44,6 @@ function MessageItem({ query, answer, type, time, isLast }) {
               <track kind="captions" />
             </audio>
           )}
-
           {!isAudio &&
             (query ? (
               <Typography color="white" className="message" variant="body1">
@@ -44,19 +57,35 @@ function MessageItem({ query, answer, type, time, isLast }) {
               />
             ))}
 
-          <Typography variant="subtitle2" fontSize={11} textAlign="end" color={query ? 'white' : 'grey'}>
-            {time}
-          </Typography>
+          {isAnimationCompleted && (
+            <Typography variant="subtitle2" fontSize={11} textAlign="end" color={query ? 'white' : 'grey'}>
+              {time}
+            </Typography>
+          )}
         </Box>
 
         {!isSentByMe && isAnimationCompleted && (
           <Stack direction="row" alignItems="center" justifyContent="flex-end" flexGrow={1}>
-            <IconButton>
-              <ThumbDownOutlined sx={{ fontSize: 14 }} />
+            <IconButton
+              sx={{ color: isRespBad ? 'primary.main' : 'currentcolor' }}
+              onClick={handleMsgFeedback(false)}
+            >
+              {isRespBad ? (
+                <ThumbDown sx={msgFeedbackButtonStyles} />
+              ) : (
+                <ThumbDownOutlined sx={msgFeedbackButtonStyles} />
+              )}
             </IconButton>
 
-            <IconButton>
-              <ThumbUpOutlined sx={{ fontSize: 14 }} />
+            <IconButton
+              sx={{ color: isRespGood ? 'primary.main' : 'currentcolor' }}
+              onClick={handleMsgFeedback(true)}
+            >
+              {isRespGood ? (
+                <ThumbUp sx={msgFeedbackButtonStyles} />
+              ) : (
+                <ThumbUpOutlined sx={msgFeedbackButtonStyles} />
+              )}
             </IconButton>
           </Stack>
         )}
@@ -70,7 +99,14 @@ function MessageItem({ query, answer, type, time, isLast }) {
         )}
 
         {isAnimationCompleted && !isSentByMe && isLast && (
-          <Button key={isLast} variant="outlined" size="small" sx={msgRespButtonStyles}>
+          <Button
+            key={isLast}
+            variant="outlined"
+            size="small"
+            sx={msgRespButtonStyles}
+            onClick={handleRegenerating}
+            disabled={isRegenerating}
+          >
             Regenerate
           </Button>
         )}
@@ -85,6 +121,7 @@ MessageItem.propTypes = {
   answer: propTypes.string,
   time: propTypes.string,
   isLast: propTypes.bool,
+  handleRegenerate: propTypes.func,
 };
 
 MessageItem.defaultProps = {
@@ -93,6 +130,7 @@ MessageItem.defaultProps = {
   answer: '',
   time: '',
   isLast: false,
+  handleRegenerate: () => {},
 };
 
 export default memo(MessageItem);

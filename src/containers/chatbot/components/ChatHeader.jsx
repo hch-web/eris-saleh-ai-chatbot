@@ -1,11 +1,13 @@
-import React from 'react';
-import { Avatar, IconButton, Stack, Tooltip, Typography } from '@mui/material';
+import React, { memo } from 'react';
+import { Avatar, IconButton, Stack, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import { CropFree, HighlightOff, SettingsOutlined, WhatsApp } from '@mui/icons-material';
 import propTypes from 'prop-types';
 
 import { chatBoxHeaderBtnStyles } from '../utilities/styles';
 
 function ChatHeader({ handleClose, isMaximized, toggleMaximize, toggleSettings }) {
+  const isMobileDevice = useMediaQuery('(max-width: 580px)');
+
   return (
     <Stack
       direction="row"
@@ -23,7 +25,7 @@ function ChatHeader({ handleClose, isMaximized, toggleMaximize, toggleSettings }
           </Typography>
 
           <Typography color="white" variant="caption">
-            Lets chat - we&apos;re online
+            {isMobileDevice ? 'Online' : "Lets chat - we're online"}
           </Typography>
         </Stack>
       </Stack>
@@ -41,11 +43,13 @@ function ChatHeader({ handleClose, isMaximized, toggleMaximize, toggleSettings }
           </IconButton>
         </Tooltip>
 
-        <Tooltip title={isMaximized ? 'Minimize' : 'Maximize'}>
-          <IconButton onClick={toggleMaximize}>
-            <CropFree sx={chatBoxHeaderBtnStyles} />
-          </IconButton>
-        </Tooltip>
+        {!isMobileDevice && (
+          <Tooltip title={isMaximized ? 'Minimize' : 'Maximize'}>
+            <IconButton onClick={toggleMaximize}>
+              <CropFree sx={chatBoxHeaderBtnStyles} />
+            </IconButton>
+          </Tooltip>
+        )}
 
         <Tooltip title="Close">
           <IconButton onClick={handleClose}>
@@ -64,4 +68,4 @@ ChatHeader.propTypes = {
   toggleSettings: propTypes.func.isRequired,
 };
 
-export default ChatHeader;
+export default memo(ChatHeader);

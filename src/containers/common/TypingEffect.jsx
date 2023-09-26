@@ -21,7 +21,7 @@ function TypingEffect({ text, stopAnimation, setStopAnimation }) {
     }
 
     setStopAnimation(true);
-  }, [currentIndex, text]);
+  }, [currentIndex, text, stopAnimation]);
 
   useEffect(() => {
     const contEl = document.getElementById('chatbot-cont-wrapper');

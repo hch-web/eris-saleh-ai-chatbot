@@ -7,7 +7,7 @@ import propTypes from 'prop-types';
 import { feedbackBackBtnStyles, feedbackBoxStyles, feedbackBtnStyles } from '../utilities/styles';
 import { feedbackBtnData } from '../utilities/data';
 
-function FeedbackPage({ isMaximized, handleClose }) {
+function FeedbackPage({ isMaximized, handleClose, handleBackToChat }) {
   const [selectedBtn, setSelectedBtn] = useState(null);
 
   const handleSelectBtn = label => {
@@ -56,7 +56,7 @@ function FeedbackPage({ isMaximized, handleClose }) {
       <Divider />
 
       <Stack p={2} direction="row" alignItems="center" justifyContent="center" spacing={2}>
-        <Button variant="contained" size="small" sx={feedbackBackBtnStyles}>
+        <Button variant="contained" size="small" sx={feedbackBackBtnStyles} onClick={handleBackToChat}>
           Back to Chat
         </Button>
 
@@ -67,7 +67,7 @@ function FeedbackPage({ isMaximized, handleClose }) {
           startIcon={<Send />}
           onClick={handleClose}
         >
-          Send Your Feedback!
+          Feedback
         </Button>
       </Stack>
     </Box>
@@ -77,6 +77,7 @@ function FeedbackPage({ isMaximized, handleClose }) {
 FeedbackPage.propTypes = {
   isMaximized: propTypes.bool.isRequired,
   handleClose: propTypes.func.isRequired,
+  handleBackToChat: propTypes.func.isRequired,
 };
 
 export default memo(FeedbackPage);
