@@ -1,6 +1,6 @@
 const boxHeight = '500px';
 const maxBoxHeight = '80vh';
-const headHeight = '56px';
+const headHeight = '60px';
 const formHeight = '104px';
 const footerHeight = '30px';
 
