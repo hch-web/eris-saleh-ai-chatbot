@@ -177,7 +177,7 @@ function ChatBox({ isOpen, handleCloseChat }) {
         {isCompletePage && <CompletePage />}
 
         {isHumanAgentPage && (
-          <HumanAgentPage handleCancel={() => dispatchPageState({ type: 'OPEN_FEEDBACK' })} />
+          <HumanAgentPage handleCancel={handleBackToChat} />
         )}
 
         {/* CHAT COMPONENT */}
