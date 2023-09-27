@@ -53,9 +53,6 @@ function ChatBox({ isOpen, handleCloseChat }) {
     isChatDialogOpen,
   } = pagesState;
 
-  // eslint-disable-next-line no-console
-  console.log('Welcome to Eris-AI');
-
   // HANDLING WEB-SOCKET ONMESSAGE EVENT
   useEffect(() => {
     if (socket) {
