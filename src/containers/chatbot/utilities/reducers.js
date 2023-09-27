@@ -5,10 +5,23 @@ export const pageInitState = {
   isMaximizedPage: false,
   isSettingDrawerOpen: false,
   isHumanAgentPage: false,
+  isChatDialogOpen: false,
 };
 
 export const pagesReducers = (state, action) => {
   switch (action.type) {
+    case 'CHAT_DIALOG_OPEN':
+      return {
+        ...state,
+        isChatDialogOpen: true,
+      };
+
+    case 'CHAT_DIALOG_CLOSE':
+      return {
+        ...state,
+        isChatDialogOpen: false,
+      };
+
     case 'BACK_TO_CHAT':
       return {
         ...state,
@@ -23,6 +36,7 @@ export const pagesReducers = (state, action) => {
         ...state,
         isChatPage: false,
         isHumanAgentPage: false,
+        isChatDialogOpen: false,
         isFeedbackPage: true,
       };
 

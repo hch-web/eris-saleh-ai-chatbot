@@ -174,8 +174,7 @@ export const footerStyles = {
   justifyContent: 'center',
   height: footerHeight,
   width: '100%',
-  position: 'absolute',
-  bottom: 0,
+  userSelect: 'none',
 
   '@media screen and (max-width: 580px)': {
     height: '27px',
@@ -263,7 +262,8 @@ export const proActiveBoxStyles = {
   right: '1.5rem',
   bottom: '5rem',
   zIndex: '999999999999',
-  boxShadow: '0 0 10px grey'
+  boxShadow: '0 0 10px grey',
+  userSelect: 'none',
 };
 
 export const msgRespButtonStyles = {
@@ -280,4 +280,7 @@ export const chatPageStyles = isOpen => ({
   display: isOpen ? 'flex' : 'none',
   flexDirection: 'column',
   alignItems: 'flex-start',
+  position: 'relative',
 });
+
+export const chatDialogStyles = { position: 'absolute', '& .MuiBackdrop-root': { position: 'absolute' } };

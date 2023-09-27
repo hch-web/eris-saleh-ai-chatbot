@@ -28,6 +28,7 @@ import SettingsDrawer from './SettingsDrawer';
 import PromtContainer from './PromtContainer';
 import { pageInitState, pagesReducers } from '../utilities/reducers';
 import HumanAgentPage from './HumanAgentPage';
+import CloseChatDialog from './CloseChatDialog';
 
 const socket = new WebSocket(getSocketURL());
 
@@ -49,6 +50,7 @@ function ChatBox({ isOpen, handleCloseChat }) {
     isMaximizedPage,
     isSettingDrawerOpen,
     isHumanAgentPage,
+    isChatDialogOpen,
   } = pagesState;
 
   // HANDLING WEB-SOCKET ONMESSAGE EVENT
@@ -71,8 +73,14 @@ function ChatBox({ isOpen, handleCloseChat }) {
   }, [chatMessages]);
 
   const handleClose = () => {
-    // OPEN FEEDBACK PAGE
+    // OPEN CHAT DIALOG
     if (isChatPage) {
+      dispatchPageState({ type: 'CHAT_DIALOG_OPEN' });
+      return;
+    }
+
+    // OPEN FEEDBACK PAGE
+    if (isChatDialogOpen) {
       dispatchPageState({ type: 'OPEN_FEEDBACK' });
       return;
     }
@@ -137,6 +145,10 @@ function ChatBox({ isOpen, handleCloseChat }) {
     dispatchPageState({ type: 'BACK_TO_CHAT' });
   };
 
+  const handleCloseChatDialog = () => {
+    dispatchPageState({ type: 'CHAT_DIALOG_CLOSE' });
+  };
+
   return (
     <Paper
       elevation={3}
@@ -181,6 +193,13 @@ function ChatBox({ isOpen, handleCloseChat }) {
 
         {/* CHAT COMPONENT */}
         <Box sx={chatPageStyles(isChatPage && !isFeedbackPage)}>
+          {/* CLOSE CHAT DIALOG */}
+          <CloseChatDialog
+            isOpen={isChatDialogOpen}
+            handleClose={handleCloseChatDialog}
+            handleAgree={() => dispatchPageState({ type: 'OPEN_FEEDBACK' })}
+          />
+
           {/* CHAT MESSAGES */}
           <Box
             id="chatbot-cont-wrapper"
