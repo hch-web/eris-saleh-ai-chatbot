@@ -12,6 +12,7 @@ import {
 } from '@mui/icons-material';
 import { motion } from 'framer-motion';
 import {
+  Box,
   Collapse,
   Divider,
   IconButton,
@@ -29,7 +30,7 @@ import { saveAs } from 'file-saver';
 
 // COMPONENTS
 import DownloadChat from '../pdf';
-// import { textSizeSliderMarks } from '../utilities/data';
+import { settingsDrawerStyles } from '../utilities/styles';
 
 function SettingsDrawer({
   toggleSettings,
@@ -59,18 +60,12 @@ function SettingsDrawer({
   };
 
   return (
-    <motion.div
+    <Box
+      component={motion.div}
       initial={{ transform: 'translateY(320px)', visibility: '0' }}
       animate={{ transform: 'translateY(0)', visibility: 1 }}
       exit={{ transform: 'translateY(320px)', visibility: '0' }}
-      style={{
-        position: 'absolute',
-        bottom: 0,
-        width: '100%',
-        zIndex: 1000,
-        background: 'white',
-        transformOrigin: 'bottom',
-      }}
+      sx={settingsDrawerStyles}
     >
       <Stack pt={1} pb={0.5} px={2} direction="row" justifyContent="space-between" gap={2}>
         <Typography variant="h6">Settings</Typography>
@@ -145,7 +140,7 @@ function SettingsDrawer({
           Terms
         </Typography>
       </Stack>
-    </motion.div>
+    </Box>
   );
 }
 

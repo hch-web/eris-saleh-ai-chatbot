@@ -1,8 +1,8 @@
 const boxHeight = '500px';
 const maxBoxHeight = '80vh';
 const headHeight = '60px';
-const formHeight = '104px';
-const footerHeight = '28px';
+const formHeight = '107px';
+const footerHeight = '27px';
 
 export const chatBoxPaperStyles = isMax => ({
   width: isMax ? '95vw' : '400px',
@@ -176,17 +176,19 @@ export const footerStyles = {
   width: '100%',
   userSelect: 'none',
 
+  '& p': {
+    fontSize: '12px',
+    lineHeight: '12px',
+    color: '#4d4d4d',
+  },
+
   '@media screen and (max-width: 580px)': {
     height: '27px',
 
     '& p': {
       fontSize: '11px',
+      lineHeight: '11px',
     },
-  },
-
-  '& p': {
-    fontSize: '12px',
-    color: '#4d4d4d',
   },
 };
 
@@ -230,7 +232,7 @@ export const chatPromptContainerStyles = {
   width: '100%',
   overflowX: 'auto',
   marginBottom: '5px',
-  paddingBottom: '3px',
+  paddingBottom: '6px',
   ...scrollStyles,
 };
 
@@ -284,3 +286,16 @@ export const chatPageStyles = isOpen => ({
 });
 
 export const chatDialogStyles = { position: 'absolute', '& .MuiBackdrop-root': { position: 'absolute' } };
+
+export const settingsDrawerStyles = {
+  position: 'absolute',
+  bottom: 0,
+  width: '100%',
+  zIndex: 1000,
+  background: 'white',
+  transformOrigin: 'bottom',
+  borderTop: '1px solid #e0e0e0',
+  boxShadow: '0 0px 10px #e0e0e0',
+};
+
+export const disableSelection = {};

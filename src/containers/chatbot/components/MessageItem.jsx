@@ -5,7 +5,12 @@ import propTypes from 'prop-types';
 
 // COMPONENTS & UTILITIES
 import TypingEffect from 'containers/common/TypingEffect';
-import { chatMessageStyles, msgFeedbackButtonStyles, msgRespButtonStyles } from '../utilities/styles';
+import {
+  chatMessageStyles,
+  disableSelection,
+  msgFeedbackButtonStyles,
+  msgRespButtonStyles,
+} from '../utilities/styles';
 
 function MessageItem({ query, answer, type, time, isLast, handleRegenerate }) {
   const [isAnimationCompleted, setAnimationCompleted] = useState(!!query);
@@ -58,7 +63,13 @@ function MessageItem({ query, answer, type, time, isLast, handleRegenerate }) {
             ))}
 
           {isAnimationCompleted && (
-            <Typography variant="subtitle2" fontSize={11} textAlign="end" color={query ? 'white' : 'grey'}>
+            <Typography
+              variant="subtitle2"
+              fontSize={11}
+              textAlign="end"
+              color={query ? 'white' : 'grey'}
+              sx={disableSelection}
+            >
               {time}
             </Typography>
           )}
@@ -91,7 +102,7 @@ function MessageItem({ query, answer, type, time, isLast, handleRegenerate }) {
         )}
       </Stack>
 
-      <Stack direction="row" gap={2}>
+      <Stack sx={disableSelection} direction="row" gap={2}>
         {!isAnimationCompleted && !isSentByMe && (
           <Button variant="outlined" size="small" sx={msgRespButtonStyles} onClick={handleStopAnimation}>
             Stop Generating
