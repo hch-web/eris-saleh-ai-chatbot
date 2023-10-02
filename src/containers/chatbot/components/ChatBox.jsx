@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useReducer, useRef, useState } from 'react';
 import { Box, IconButton, Paper, Stack } from '@mui/material';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { MicNoneOutlined, SendOutlined, Stop } from '@mui/icons-material';
 import { Form, Formik } from 'formik';
 import propTypes from 'prop-types';
@@ -20,7 +20,6 @@ import {
 import MessageItem from './MessageItem';
 import LoadingMessage from './LoadingMessage';
 import Footer from './Footer';
-import { chatBoxAnimationProps } from '../utilities/animations';
 import ChatHeader from './ChatHeader';
 import FeedbackPage from './FeedbackPage';
 import CompletePage from './CompletePage';
@@ -28,7 +27,7 @@ import SettingsDrawer from './SettingsDrawer';
 import PromtContainer from './PromtContainer';
 import { pageInitState, pagesReducers } from '../utilities/reducers';
 import HumanAgentPage from './HumanAgentPage';
-import CloseChatDialog from './CloseChatDialog';
+import ClearChatDialog from './ClearChatDialog';
 
 const socket = new WebSocket(getSocketURL());
 
@@ -73,14 +72,8 @@ function ChatBox({ isOpen, handleCloseChat }) {
   }, [chatMessages]);
 
   const handleClose = () => {
-    // OPEN CHAT DIALOG
-    if (isChatPage) {
-      dispatchPageState({ type: 'CHAT_DIALOG_OPEN' });
-      return;
-    }
-
     // OPEN FEEDBACK PAGE
-    if (isChatDialogOpen) {
+    if (isChatPage) {
       dispatchPageState({ type: 'OPEN_FEEDBACK' });
       return;
     }
@@ -145,17 +138,13 @@ function ChatBox({ isOpen, handleCloseChat }) {
     dispatchPageState({ type: 'BACK_TO_CHAT' });
   };
 
-  const handleCloseChatDialog = () => {
+  const handleClearChat = () => {
+    setChatMessages([]);
     dispatchPageState({ type: 'CHAT_DIALOG_CLOSE' });
   };
 
   return (
-    <Paper
-      elevation={3}
-      component={motion.div}
-      sx={chatBoxPaperStyles(isMaximizedPage)}
-      {...chatBoxAnimationProps}
-    >
+    <Paper elevation={3} sx={chatBoxPaperStyles(isMaximizedPage)}>
       <Box height={1} sx={{ position: 'relative' }}>
         <ChatHeader
           isMaximized={isMaximizedPage}
@@ -170,7 +159,7 @@ function ChatBox({ isOpen, handleCloseChat }) {
             <SettingsDrawer
               chatMessages={chatMessages}
               toggleSettings={toggleSettings}
-              handleClearChat={() => setChatMessages([])}
+              handleClearChat={() => dispatchPageState({ type: 'CHAT_DIALOG_OPEN' })}
               handleUpdateTextSize={handleUpdateTextSize}
               textSize={textSize}
               handleOpenHumanAgentPage={() => dispatchPageState({ type: 'OPEN_HUMAN_PAGE' })}
@@ -193,11 +182,10 @@ function ChatBox({ isOpen, handleCloseChat }) {
 
         {/* CHAT COMPONENT */}
         <Box sx={chatPageStyles(isChatPage && !isFeedbackPage)}>
-          {/* CLOSE CHAT DIALOG */}
-          <CloseChatDialog
+          <ClearChatDialog
             isOpen={isChatDialogOpen}
-            handleClose={handleCloseChatDialog}
-            handleAgree={() => dispatchPageState({ type: 'OPEN_FEEDBACK' })}
+            handleClose={() => dispatchPageState({ type: 'CHAT_DIALOG_CLOSE' })}
+            handleAgree={handleClearChat}
           />
 
           {/* CHAT MESSAGES */}

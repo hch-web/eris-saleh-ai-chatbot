@@ -4,17 +4,17 @@ import propTypes from 'prop-types';
 
 import { chatDialogStyles } from '../utilities/styles';
 
-function CloseChatDialog({ isOpen, handleClose, handleAgree }) {
+function ClearChatDialog({ isOpen, handleClose, handleAgree }) {
   return (
     <Dialog sx={chatDialogStyles} disablePortal open={isOpen} onClose={handleClose}>
-      <DialogTitle>Are You Sure To End This Chat?</DialogTitle>
+      <DialogTitle fontSize={14}>Are You Sure to Clear?</DialogTitle>
 
-      <DialogActions>
-        <Button size="small" onClick={handleClose}>
+      <DialogActions sx={{ justifyContent: 'center' }}>
+        <Button size="small" sx={{ fontSize: '12px' }} onClick={handleClose}>
           Cancel
         </Button>
 
-        <Button size="small" onClick={handleAgree}>
+        <Button size="small" sx={{ fontSize: '12px' }} onClick={handleAgree}>
           Yes
         </Button>
       </DialogActions>
@@ -22,14 +22,14 @@ function CloseChatDialog({ isOpen, handleClose, handleAgree }) {
   );
 }
 
-CloseChatDialog.propTypes = {
+ClearChatDialog.propTypes = {
   isOpen: propTypes.bool,
   handleClose: propTypes.func.isRequired,
   handleAgree: propTypes.func.isRequired,
 };
 
-CloseChatDialog.defaultProps = {
+ClearChatDialog.defaultProps = {
   isOpen: false,
 };
 
-export default CloseChatDialog;
+export default ClearChatDialog;

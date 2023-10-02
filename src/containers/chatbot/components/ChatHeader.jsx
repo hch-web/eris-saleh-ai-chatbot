@@ -25,7 +25,7 @@ function ChatHeader({ handleClose, isMaximized, toggleMaximize, toggleSettings }
           </Typography>
 
           <Typography color="white" variant="caption">
-            {isMobileDevice ? 'Online' : "Lets chat - we're online"}
+            {isMobileDevice ? 'Online' : "Lets chat - we're online!"}
           </Typography>
         </Stack>
       </Stack>

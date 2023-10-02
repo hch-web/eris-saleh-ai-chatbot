@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
-import { AnimatePresence } from 'framer-motion';
 
 // COMPONENTS
 import ChatBtn from './components/ChatBtn';
@@ -15,9 +14,7 @@ function ChatBot() {
 
   return (
     <Box className="chat-main-container">
-      <AnimatePresence>
-        {isChatOpen && <ChatBox isOpen={isChatOpen} handleCloseChat={toggleChatBox} />}
-      </AnimatePresence>
+      {isChatOpen && <ChatBox isOpen={isChatOpen} handleCloseChat={toggleChatBox} />}
 
       <ChatBtn isOpen={isChatOpen} handleClick={toggleChatBox} />
     </Box>

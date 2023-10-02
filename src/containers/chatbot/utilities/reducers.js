@@ -20,6 +20,7 @@ export const pagesReducers = (state, action) => {
       return {
         ...state,
         isChatDialogOpen: false,
+        isSettingDrawerOpen: false,
       };
 
     case 'BACK_TO_CHAT':
