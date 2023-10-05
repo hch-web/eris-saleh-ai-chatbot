@@ -14,7 +14,7 @@ function ChatBtn({ handleClick, isOpen }) {
       <AnimatePresence>
         {!isOpen && (
           <Box component={motion.div} sx={proActiveBoxStyles} {...proActiveBoxAnimationProps}>
-            Welcome, ask me anything!
+            Let&apos;s Chat, I&apos;m here to assist!
           </Box>
         )}
       </AnimatePresence>

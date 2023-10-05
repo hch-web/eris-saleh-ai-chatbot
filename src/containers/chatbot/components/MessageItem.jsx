@@ -49,6 +49,7 @@ function MessageItem({ query, answer, type, time, isLast, handleRegenerate }) {
               <track kind="captions" />
             </audio>
           )}
+
           {!isAudio &&
             (query ? (
               <Typography color="white" className="message" variant="body1">
