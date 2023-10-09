@@ -3,6 +3,7 @@ import { Avatar, IconButton, Stack, Typography, useMediaQuery } from '@mui/mater
 import { CropFree, HighlightOff, SettingsOutlined, WhatsApp } from '@mui/icons-material';
 import propTypes from 'prop-types';
 
+import { avatarImgURL } from 'utilities/constants';
 import { chatBoxHeaderBtnStyles } from '../utilities/styles';
 
 function ChatHeader({ handleClose, isMaximized, toggleMaximize, toggleSettings }) {
@@ -17,7 +18,7 @@ function ChatHeader({ handleClose, isMaximized, toggleMaximize, toggleSettings }
       padding={1}
     >
       <Stack direction="row" spacing={1} alignItems="center">
-        <Avatar src="https://besportal.s3.amazonaws.com/media/invoice_docs/logo-280px.jpg" alt="Eris" />
+        <Avatar src={avatarImgURL} alt="Eris" />
 
         <Stack>
           <Typography color="white" variant="body1">
@@ -25,7 +26,7 @@ function ChatHeader({ handleClose, isMaximized, toggleMaximize, toggleSettings }
           </Typography>
 
           <Typography color="white" variant="caption">
-            {isMobileDevice ? 'Online' : "Lets chat - we're online!"}
+            {isMobileDevice ? 'Online' : "Lets chat - I'm here to assist!"}
           </Typography>
         </Stack>
       </Stack>
