@@ -22,7 +22,7 @@ function ChatHeader({ handleClose, isMaximized, toggleMaximize, toggleSettings }
 
         <Stack>
           <Typography color="white" variant="body1">
-            ERIS AI (صالح)
+            Saleh (صالح)
           </Typography>
 
           <Typography color="white" variant="caption">
