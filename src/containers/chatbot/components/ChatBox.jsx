@@ -92,8 +92,17 @@ function ChatBox({ isOpen, handleCloseChat }) {
   };
 
   const handleStartRecording = async () => {
+    let options = {};
+
+    // CHECKING WHICH TYPE IS SUPPORTED FOR CROSS BROWSER COMPATIBILITY
+    if (MediaRecorder.isTypeSupported('audio/webm')) {
+      options = { mimeType: 'audio/webm' };
+    } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
+      options = { mimeType: 'audio/mp4' };
+    }
+
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    mediaRecorder.current = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+    mediaRecorder.current = new MediaRecorder(stream, options);
 
     mediaRecorder.current.ondataavailable = async event => {
       if (event.data.size > 0) {
