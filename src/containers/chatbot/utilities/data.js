@@ -18,7 +18,7 @@ export const feedbackBtnData = [
     label: 'Bot was intelligent',
   },
   {
-    label: 'Quick Replies',
+    label: 'Others',
   },
 ];
 

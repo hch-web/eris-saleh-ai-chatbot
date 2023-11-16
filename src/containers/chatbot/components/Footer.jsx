@@ -9,7 +9,7 @@ function Footer() {
 
       <Box sx={footerStyles}>
         <Typography variant="body2" textAlign="center">
-          Powered By Beyond Eris Solutions
+          Powered By ERIS AI
         </Typography>
       </Box>
     </>

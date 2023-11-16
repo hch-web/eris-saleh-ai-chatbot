@@ -1,17 +1,46 @@
-import { Box, Button, Divider, Grid, Rating, Stack, Typography } from '@mui/material';
+import { Box, Button, Divider, Grid, Rating, Stack, TextField, Typography } from '@mui/material';
 import React, { memo, useState } from 'react';
 import { v4 } from 'uuid';
 import { Send } from '@mui/icons-material';
+import axios from 'axios';
 import propTypes from 'prop-types';
 
+import { API_URL } from 'utilities/constants';
 import { feedbackBackBtnStyles, feedbackBoxStyles, feedbackBtnStyles } from '../utilities/styles';
 import { feedbackBtnData } from '../utilities/data';
 
 function FeedbackPage({ isMaximized, handleClose, handleBackToChat }) {
   const [selectedBtn, setSelectedBtn] = useState(null);
+  const [rating, setRating] = useState(0);
+  const [feedbackText, setFeedbackText] = useState('');
+  const [isOthersOpen, setOthersOpen] = useState(false);
 
   const handleSelectBtn = label => {
     setSelectedBtn(label);
+    setOthersOpen(false);
+  };
+
+  const handleChangeRating = (event, newValue) => {
+    setRating(newValue);
+  };
+
+  const handleSendFeedback = async () => {
+    const chatId = localStorage.getItem('chatId');
+    const payload = {
+      feedback_rating: rating,
+      feedback_text: isOthersOpen ? feedbackText : selectedBtn,
+    };
+    await axios.put(`${API_URL}/feedback/${chatId}/`, payload);
+    handleClose();
+  };
+
+  const handleSelectOther = () => {
+    setSelectedBtn('Others');
+    setOthersOpen(true);
+  };
+
+  const handleChangeFeedbackText = event => {
+    setFeedbackText(event.target.value);
   };
 
   return (
@@ -23,7 +52,7 @@ function FeedbackPage({ isMaximized, handleClose, handleBackToChat }) {
           Thank You For Chatting With us, If You Can Take A minute and Rate This Chat.
         </Typography>
 
-        <Rating name="Rating" defaultValue={0} />
+        <Rating name="Rating" value={rating} onChange={handleChangeRating} defaultValue={0} />
       </Box>
 
       <Divider flexItem />
@@ -36,14 +65,15 @@ function FeedbackPage({ isMaximized, handleClose, handleBackToChat }) {
         <Grid container columnSpacing={1} rowGap={2} alignItems="center">
           {feedbackBtnData?.map(item => {
             const isSelected = selectedBtn === item?.label;
+            const isOthersBtn = item?.label === 'Others';
 
             return (
               <Grid key={v4()} item xs={12} sm={4} textAlign="center">
                 <Button
                   className="Mui-Selected"
-                  sx={feedbackBtnStyles(isSelected)}
+                  sx={feedbackBtnStyles(isOthersOpen && isOthersBtn ? true : isSelected)}
                   variant="outlined"
-                  onClick={() => handleSelectBtn(item?.label)}
+                  onClick={isOthersBtn ? handleSelectOther : () => handleSelectBtn(item?.label)}
                 >
                   {item?.label}
                 </Button>
@@ -51,6 +81,19 @@ function FeedbackPage({ isMaximized, handleClose, handleBackToChat }) {
             );
           })}
         </Grid>
+
+        {isOthersOpen && (
+          <TextField
+            sx={{ paddingTop: 1, '& textarea': { fontSize: 14 } }}
+            placeholder="Write something..."
+            fullWidth
+            multiline
+            minRows={1}
+            maxRows={2}
+            onChange={handleChangeFeedbackText}
+            value={feedbackText}
+          />
+        )}
       </Box>
 
       <Divider flexItem />
@@ -65,7 +108,7 @@ function FeedbackPage({ isMaximized, handleClose, handleBackToChat }) {
           size="small"
           sx={{ textTransform: 'capitalize' }}
           startIcon={<Send />}
-          onClick={handleClose}
+          onClick={handleSendFeedback}
         >
           Feedback
         </Button>

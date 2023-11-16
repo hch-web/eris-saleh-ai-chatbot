@@ -56,6 +56,9 @@ export const submitBtnStyles = {
   ':hover': {
     background: theme => theme.palette.primary.main,
   },
+  '&.Mui-disabled': {
+    background: '#c5c5c5',
+  },
 };
 
 export const scrollStyles = {
@@ -269,9 +272,10 @@ export const proActiveBoxStyles = {
 };
 
 export const msgRespButtonStyles = {
-  fontSize: 12,
+  fontSize: 11,
   textTransform: 'capitalize',
   border: theme => `1px solid ${theme.palette.primary.main}`,
+  padding: '3px 3px',
 };
 
 export const msgFeedbackButtonStyles = {

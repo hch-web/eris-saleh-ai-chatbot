@@ -21,11 +21,11 @@ function ChatHeader({ handleClose, isMaximized, toggleMaximize, toggleSettings }
 
         <Stack>
           <Typography color="white" variant="body1">
-            ERIS AI
+            Saleh (صالح)
           </Typography>
 
           <Typography color="white" variant="caption">
-            {isMobileDevice ? 'Online' : "Lets chat - we're online!"}
+            {isMobileDevice ? 'Online' : "Lets chat - I'm here to assist!"}
           </Typography>
         </Stack>
       </Stack>

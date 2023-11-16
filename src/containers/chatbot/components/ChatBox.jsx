@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useReducer, useRef, useState } from 'react';
+import React, { memo, useRef, useState } from 'react';
 import { Box, IconButton, Paper, Stack } from '@mui/material';
 import { AnimatePresence } from 'framer-motion';
 import { MicNoneOutlined, SendOutlined, Stop } from '@mui/icons-material';
@@ -8,7 +8,6 @@ import moment from 'moment';
 
 // COMPONENTS & UTILITIES
 import FormikField from 'containers/shared/FormikField';
-import { getSocketURL } from 'utilities/constants';
 import {
   chatBoxMessageWrapperStyles,
   chatBoxMessagesBox,
@@ -25,23 +24,48 @@ import FeedbackPage from './FeedbackPage';
 import CompletePage from './CompletePage';
 import SettingsDrawer from './SettingsDrawer';
 import PromtContainer from './PromtContainer';
-import { pageInitState, pagesReducers } from '../utilities/reducers';
 import HumanAgentPage from './HumanAgentPage';
 import ClearChatDialog from './ClearChatDialog';
-
-const socket = new WebSocket(getSocketURL());
+import useConnectWebsocket from '../customHooks/useConnectWebsocket';
+import useHandleChat from '../customHooks/useHandleChat';
+import useHandleVoice from '../customHooks/useHandleVoice';
+import useChatHandlers from '../customHooks/useChatHandlers';
 
 function ChatBox({ isOpen, handleCloseChat }) {
   const messageRef = useRef(null);
-  const mediaRecorder = useRef(null);
 
   const [chatMessages, setChatMessages] = useState([]);
   const [isLoading, setLoading] = useState(false);
-  const [isVoiceRecording, setVoiceRecording] = useState(false);
-  const [audioBlob, setAudioBlob] = useState(null);
-  const [textSize, setTextSize] = useState(14);
   const [recentQuery, setRecentQuery] = useState(null);
-  const [pagesState, dispatchPageState] = useReducer(pagesReducers, pageInitState);
+  const [isBtnsDisabled, setBtnsDisabled] = useState(false);
+
+  const socketRef = useConnectWebsocket();
+  const {
+    textSize,
+    handleBackToChat,
+    handleClearChat,
+    handleClose,
+    handleRegenerate,
+    handleUpdateTextSize,
+    toggleSettings,
+    dispatchPageState,
+    pagesState,
+  } = useChatHandlers(
+    socketRef,
+    chatMessages,
+    isOpen,
+    handleCloseChat,
+    recentQuery,
+    setLoading,
+    setChatMessages
+  );
+  const { suggestions } = useHandleChat(socketRef, chatMessages, setChatMessages, setLoading);
+  const { handleStartRecording, handleStopRecording, isVoiceRecording, audioBlob } = useHandleVoice(
+    socketRef,
+    setChatMessages,
+    setLoading,
+    setRecentQuery
+  );
   const {
     isChatPage,
     isFeedbackPage,
@@ -51,97 +75,6 @@ function ChatBox({ isOpen, handleCloseChat }) {
     isHumanAgentPage,
     isChatDialogOpen,
   } = pagesState;
-
-  // HANDLING WEB-SOCKET ONMESSAGE EVENT
-  useEffect(() => {
-    if (socket) {
-      socket.onmessage = e => {
-        const data = JSON.parse(e.data);
-
-        setChatMessages(prevState => [...prevState, { ...data, timestamp: moment().format('hh:mm A') }]);
-        setLoading(false);
-      };
-    }
-  }, [socket]);
-
-  // SCROLL TO BOTTOM ON NEW MESSAGE
-  useEffect(() => {
-    if (chatMessages?.length > 0) {
-      messageRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [chatMessages]);
-
-  const handleClose = () => {
-    // OPEN FEEDBACK PAGE
-    if (isChatPage) {
-      dispatchPageState({ type: 'OPEN_FEEDBACK' });
-      return;
-    }
-
-    // OPEN COMPLETE PAGE
-    if (isFeedbackPage) {
-      dispatchPageState({ type: 'OPEN_COMPLETE' });
-      return;
-    }
-
-    // CLOSE CHAT
-    if (isCompletePage && isOpen) {
-      dispatchPageState({ type: 'CLOSE_COMPLETE' });
-      handleCloseChat();
-    }
-  };
-
-  const handleStartRecording = async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    mediaRecorder.current = new MediaRecorder(stream, { mimeType: 'audio/webm' });
-
-    mediaRecorder.current.ondataavailable = async event => {
-      if (event.data.size > 0) {
-        setAudioBlob(event.data);
-
-        socket.send(event.data);
-        setChatMessages(prevState => [
-          ...prevState,
-          { query: URL.createObjectURL(event.data), type: 'audio' },
-        ]);
-        setAudioBlob(null);
-        setLoading(true);
-      }
-    };
-
-    mediaRecorder.current.start();
-    setVoiceRecording(true);
-  };
-
-  const handleStopRecording = () => {
-    if (mediaRecorder.current && mediaRecorder.current.state === 'recording') {
-      mediaRecorder.current.stop();
-    }
-    setVoiceRecording(false);
-  };
-
-  const toggleSettings = () => {
-    dispatchPageState({ type: 'TOGGLE_SETTINGS_DRAWER' });
-  };
-
-  const handleUpdateTextSize = value => {
-    setTextSize(value);
-  };
-
-  const handleRegenerate = () => {
-    setLoading(true);
-    socket.send(JSON.stringify({ query: recentQuery, type: 'text' }));
-    messageRef.current.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const handleBackToChat = () => {
-    dispatchPageState({ type: 'BACK_TO_CHAT' });
-  };
-
-  const handleClearChat = () => {
-    setChatMessages([]);
-    dispatchPageState({ type: 'CHAT_DIALOG_CLOSE' });
-  };
 
   return (
     <Paper elevation={3} sx={chatBoxPaperStyles(isMaximizedPage)}>
@@ -204,8 +137,11 @@ function ChatBox({ isOpen, handleCloseChat }) {
                   answer={item?.answer}
                   query={item?.query}
                   time={item?.timestamp}
+                  isFirst={idx === 0}
                   isLast={idx === arr.length - 1}
                   handleRegenerate={handleRegenerate}
+                  setBtnsDisabled={setBtnsDisabled}
+                  messageId={item?.message_id}
                 />
               ))}
 
@@ -229,17 +165,17 @@ function ChatBox({ isOpen, handleCloseChat }) {
                 };
 
                 setLoading(true);
-                socket.send(JSON.stringify(payload));
+                socketRef.current?.send(JSON.stringify(payload));
 
                 setChatMessages(prevState => [...prevState, payload]);
-                setRecentQuery(values.message);
+                setRecentQuery({ type: 'text', message: values.message });
 
                 resetForm();
               }}
             >
               {() => (
                 <Form>
-                  <PromtContainer />
+                  <PromtContainer suggestions={suggestions} />
 
                   <Stack width={1} direction="row" alignItems="center" gap={1} sx={chatFormStackStyles}>
                     <FormikField
@@ -249,16 +185,16 @@ function ChatBox({ isOpen, handleCloseChat }) {
                     />
 
                     {!isVoiceRecording ? (
-                      <IconButton onClick={handleStartRecording}>
+                      <IconButton disabled={isBtnsDisabled} onClick={handleStartRecording}>
                         <MicNoneOutlined fontSize="small" />
                       </IconButton>
                     ) : (
-                      <IconButton color="error" onClick={handleStopRecording}>
+                      <IconButton disabled={isBtnsDisabled} color="error" onClick={handleStopRecording}>
                         <Stop fontSize="small" />
                       </IconButton>
                     )}
 
-                    <IconButton type="submit" sx={submitBtnStyles}>
+                    <IconButton disabled={isBtnsDisabled} type="submit" sx={submitBtnStyles}>
                       <SendOutlined fontSize="small" sx={{ color: 'white' }} />
                     </IconButton>
                   </Stack>

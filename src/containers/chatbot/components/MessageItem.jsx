@@ -1,10 +1,11 @@
-import React, { memo, useMemo, useState } from 'react';
+import React, { memo, useEffect, useMemo, useState } from 'react';
 import { Box, Button, IconButton, Stack, Typography } from '@mui/material';
 import { ThumbDown, ThumbDownOutlined, ThumbUp, ThumbUpOutlined } from '@mui/icons-material';
 import propTypes from 'prop-types';
 
 // COMPONENTS & UTILITIES
 import TypingEffect from 'containers/common/TypingEffect';
+import { API_URL } from 'utilities/constants';
 import {
   chatMessageStyles,
   disableSelection,
@@ -12,18 +13,50 @@ import {
   msgRespButtonStyles,
 } from '../utilities/styles';
 
-function MessageItem({ query, answer, type, time, isLast, handleRegenerate }) {
+function MessageItem({
+  query,
+  answer,
+  type,
+  time,
+  isLast,
+  handleRegenerate,
+  isFirst,
+  setBtnsDisabled,
+  messageId,
+}) {
   const [isAnimationCompleted, setAnimationCompleted] = useState(!!query);
   const [msgFeedback, setMsgFeedback] = useState(null);
   const [isRegenerating, setRegenerating] = useState(false);
   const isSentByMe = !!query;
   const isAudio = type === 'audio';
 
+  useEffect(() => {
+    if (isAnimationCompleted) {
+      setBtnsDisabled(false);
+    } else {
+      setBtnsDisabled(true);
+    }
+  }, [isAnimationCompleted]);
+
   const handleStopAnimation = () => {
     setAnimationCompleted(true);
   };
 
-  const handleMsgFeedback = val => () => {
+  const handleMsgFeedback = val => async () => {
+    if (msgFeedback === val) return;
+
+    const payload = {
+      is_liked: val,
+    };
+
+    await fetch(`${API_URL}/message-feedback/${messageId}/`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
     setMsgFeedback(val);
   };
 
@@ -63,7 +96,7 @@ function MessageItem({ query, answer, type, time, isLast, handleRegenerate }) {
               />
             ))}
 
-          {isAnimationCompleted && (
+          {isAnimationCompleted && !isAudio && (
             <Typography
               variant="subtitle2"
               fontSize={11}
@@ -76,7 +109,7 @@ function MessageItem({ query, answer, type, time, isLast, handleRegenerate }) {
           )}
         </Box>
 
-        {!isSentByMe && isAnimationCompleted && (
+        {!isSentByMe && isAnimationCompleted && !isFirst && (
           <Stack direction="row" alignItems="center" justifyContent="flex-end" flexGrow={1}>
             <IconButton
               sx={{ color: isRespBad ? 'primary.main' : 'currentcolor' }}
@@ -103,26 +136,28 @@ function MessageItem({ query, answer, type, time, isLast, handleRegenerate }) {
         )}
       </Stack>
 
-      <Stack sx={disableSelection} direction="row" gap={2}>
-        {!isAnimationCompleted && !isSentByMe && (
-          <Button variant="outlined" size="small" sx={msgRespButtonStyles} onClick={handleStopAnimation}>
-            Stop Generating
-          </Button>
-        )}
+      {!isFirst && (
+        <Stack sx={disableSelection} direction="row" gap={2}>
+          {!isAnimationCompleted && !isSentByMe && (
+            <Button variant="outlined" size="small" sx={msgRespButtonStyles} onClick={handleStopAnimation}>
+              Stop Generating
+            </Button>
+          )}
 
-        {isAnimationCompleted && !isSentByMe && isLast && (
-          <Button
-            key={isLast}
-            variant="outlined"
-            size="small"
-            sx={msgRespButtonStyles}
-            onClick={handleRegenerating}
-            disabled={isRegenerating}
-          >
-            Regenerate
-          </Button>
-        )}
-      </Stack>
+          {isAnimationCompleted && !isSentByMe && isLast && (
+            <Button
+              key={isLast}
+              variant="outlined"
+              size="small"
+              sx={msgRespButtonStyles}
+              onClick={handleRegenerating}
+              disabled={isRegenerating}
+            >
+              Regenerate
+            </Button>
+          )}
+        </Stack>
+      )}
     </>
   );
 }
@@ -133,7 +168,10 @@ MessageItem.propTypes = {
   answer: propTypes.string,
   time: propTypes.string,
   isLast: propTypes.bool,
+  isFirst: propTypes.bool,
   handleRegenerate: propTypes.func,
+  setBtnsDisabled: propTypes.func,
+  messageId: propTypes.number,
 };
 
 MessageItem.defaultProps = {
@@ -142,7 +180,10 @@ MessageItem.defaultProps = {
   answer: '',
   time: '',
   isLast: false,
+  isFirst: false,
   handleRegenerate: () => {},
+  setBtnsDisabled: () => {},
+  messageId: null,
 };
 
 export default memo(MessageItem);

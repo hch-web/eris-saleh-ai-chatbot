@@ -71,9 +71,9 @@ function DownloadChat({ chatMessages }) {
       <Page size="A4" style={styles.page}>
         <View style={styles.header}>
           <View style={styles.logoCont}>
-            <Text style={styles.title}>Eris AI -</Text>
+            <Text style={styles.title}>MBRSG AI -</Text>
 
-            <Text>Chat Transcript</Text>
+            <Text>Chat History</Text>
           </View>
 
           <Text style={styles.date}>
