@@ -1,4 +1,4 @@
-import React, { memo, useRef, useState } from 'react';
+import React, { memo, useMemo, useRef, useState } from 'react';
 import { Box, IconButton, Paper, Stack } from '@mui/material';
 import { AnimatePresence } from 'framer-motion';
 import { MicNoneOutlined, SendOutlined, Stop } from '@mui/icons-material';
@@ -30,6 +30,7 @@ import useConnectWebsocket from '../customHooks/useConnectWebsocket';
 import useHandleChat from '../customHooks/useHandleChat';
 import useHandleVoice from '../customHooks/useHandleVoice';
 import useChatHandlers from '../customHooks/useChatHandlers';
+import { ChatBotContext } from '../context/ChatBotContext';
 
 function ChatBox({ isOpen, handleCloseChat }) {
   const messageRef = useRef(null);
@@ -38,6 +39,8 @@ function ChatBox({ isOpen, handleCloseChat }) {
   const [isLoading, setLoading] = useState(false);
   const [recentQuery, setRecentQuery] = useState(null);
   const [isBtnsDisabled, setBtnsDisabled] = useState(false);
+  const [isSpeaking, setSpeaking] = useState(false);
+  const [isStopped, setStopped] = useState(false);
 
   const socketRef = useConnectWebsocket();
   const {
@@ -75,6 +78,11 @@ function ChatBox({ isOpen, handleCloseChat }) {
     isHumanAgentPage,
     isChatDialogOpen,
   } = pagesState;
+
+  const contextValue = useMemo(
+    () => ({ isSpeaking, isStopped, setSpeaking, setStopped }),
+    [isSpeaking, isStopped]
+  );
 
   return (
     <Paper elevation={3} sx={chatBoxPaperStyles(isMaximizedPage)}>
@@ -122,34 +130,37 @@ function ChatBox({ isOpen, handleCloseChat }) {
           />
 
           {/* CHAT MESSAGES */}
-          <Box
-            id="chatbot-cont-wrapper"
-            padding={1}
-            width={1}
-            sx={chatBoxMessageWrapperStyles(isMaximizedPage)}
-          >
-            <Box sx={chatBoxMessagesBox(textSize)}>
-              {chatMessages?.map((item, idx, arr) => (
-                <MessageItem
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={idx}
-                  type={item?.type}
-                  answer={item?.answer}
-                  query={item?.query}
-                  time={item?.timestamp}
-                  isFirst={idx === 0}
-                  isLast={idx === arr.length - 1}
-                  handleRegenerate={handleRegenerate}
-                  setBtnsDisabled={setBtnsDisabled}
-                  messageId={item?.message_id}
-                />
-              ))}
+          <ChatBotContext.Provider value={contextValue}>
+            <Box
+              id="chatbot-cont-wrapper"
+              padding={1}
+              width={1}
+              sx={chatBoxMessageWrapperStyles(isMaximizedPage)}
+            >
+              <Box sx={chatBoxMessagesBox(textSize)}>
+                {chatMessages?.map((item, idx, arr) => (
+                  <MessageItem
+                    // eslint-disable-next-line react/no-array-index-key
+                    key={idx}
+                    type={item?.type}
+                    answer={item?.answer}
+                    query={item?.query}
+                    time={item?.timestamp}
+                    isFirst={idx === 0}
+                    isLast={idx === arr.length - 1}
+                    handleRegenerate={handleRegenerate}
+                    setBtnsDisabled={setBtnsDisabled}
+                    messageId={item?.message_id}
+                    audio={item?.audio}
+                  />
+                ))}
 
-              {isLoading && <LoadingMessage />}
+                {isLoading && <LoadingMessage />}
 
-              <Box id="_end-block-message" ref={messageRef} sx={{ height: '2px', width: '100%' }} />
+                <Box id="_end-block-message" ref={messageRef} sx={{ height: '2px', width: '100%' }} />
+              </Box>
             </Box>
-          </Box>
+          </ChatBotContext.Provider>
 
           {/* MESSAGE FORM */}
           <Box padding={1} width={1}>

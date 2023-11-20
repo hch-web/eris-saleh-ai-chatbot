@@ -12,6 +12,7 @@ import {
   msgFeedbackButtonStyles,
   msgRespButtonStyles,
 } from '../utilities/styles';
+import useHandleVoicePlayback from '../customHooks/useHandleVoicePlayback';
 
 function MessageItem({
   query,
@@ -23,12 +24,15 @@ function MessageItem({
   isFirst,
   setBtnsDisabled,
   messageId,
+  audio,
 }) {
   const [isAnimationCompleted, setAnimationCompleted] = useState(!!query);
   const [msgFeedback, setMsgFeedback] = useState(null);
   const [isRegenerating, setRegenerating] = useState(false);
   const isSentByMe = !!query;
   const isAudio = type === 'audio';
+
+  const { handleStopResponse } = useHandleVoicePlayback(audio, setAnimationCompleted);
 
   useEffect(() => {
     if (isAnimationCompleted) {
@@ -37,10 +41,6 @@ function MessageItem({
       setBtnsDisabled(true);
     }
   }, [isAnimationCompleted]);
-
-  const handleStopAnimation = () => {
-    setAnimationCompleted(true);
-  };
 
   const handleMsgFeedback = val => async () => {
     if (msgFeedback === val) return;
@@ -139,7 +139,7 @@ function MessageItem({
       {!isFirst && (
         <Stack sx={disableSelection} direction="row" gap={2}>
           {!isAnimationCompleted && !isSentByMe && (
-            <Button variant="outlined" size="small" sx={msgRespButtonStyles} onClick={handleStopAnimation}>
+            <Button variant="outlined" size="small" sx={msgRespButtonStyles} onClick={handleStopResponse}>
               Stop Generating
             </Button>
           )}
@@ -172,6 +172,7 @@ MessageItem.propTypes = {
   handleRegenerate: propTypes.func,
   setBtnsDisabled: propTypes.func,
   messageId: propTypes.number,
+  audio: propTypes.string,
 };
 
 MessageItem.defaultProps = {
@@ -184,6 +185,7 @@ MessageItem.defaultProps = {
   handleRegenerate: () => {},
   setBtnsDisabled: () => {},
   messageId: null,
+  audio: null,
 };
 
 export default memo(MessageItem);
