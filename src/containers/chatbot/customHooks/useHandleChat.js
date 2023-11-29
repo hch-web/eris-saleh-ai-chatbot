@@ -34,6 +34,7 @@ const useHandleChat = (socketRef, chatMessages, setChatMessages, setLoading) => 
             isQuery: false,
             type: 'text',
             audio: null,
+            message_id: data?.message_id,
           };
 
           setChatMessages(prevState => [...prevState, messageObj]);
