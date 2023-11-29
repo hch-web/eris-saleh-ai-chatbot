@@ -37,6 +37,7 @@ const useHandleChat = (socketRef, chatMessages, setChatMessages, setLoading) => 
           };
 
           setChatMessages(prevState => [...prevState, messageObj]);
+          setLoading(false);
 
           const audioFile = await getVoiceAudio(data?.answer);
 
@@ -47,8 +48,6 @@ const useHandleChat = (socketRef, chatMessages, setChatMessages, setLoading) => 
 
             return updatedMessages;
           });
-
-          setLoading(false);
         }
 
         if ('suggestion' in data) {
