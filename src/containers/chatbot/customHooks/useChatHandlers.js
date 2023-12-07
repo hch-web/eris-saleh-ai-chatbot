@@ -77,7 +77,7 @@ const useChatHandlers = () => {
   const handleConnectHumanAgent = useCallback(() => {
     const humanAgentSocket = new WebSocket(getHumanAgentSocketURL());
     const newChatMessages = [...chatMessages];
-    newChatMessages.push({ type: 'DIVIDER', message: 'Human Agent connected!' });
+    newChatMessages.push({ type: 'DIVIDER', message: 'Human Agent chat' });
 
     dispatchPageState({ type: 'BACK_TO_CHAT' });
     setChatMessages(newChatMessages);
