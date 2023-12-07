@@ -2,13 +2,14 @@ import React, { memo } from 'react';
 import { Box, Stack } from '@mui/material';
 import { useFormikContext } from 'formik';
 import { v4 } from 'uuid';
-import propTypes from 'prop-types';
 
 // COMPONENTS & UTILITIES
 import { chatPromptContainerStyles, chatPropmtBoxStyles } from '../utilities/styles';
+import { useGlobalContext } from '../context/GlobalContext';
 
-function PromtContainer({ suggestions }) {
+function PromtContainer() {
   const { setFieldValue } = useFormikContext();
+  const { suggestions } = useGlobalContext();
 
   const handleClick = prompt => {
     setFieldValue('message', prompt);
@@ -26,13 +27,5 @@ function PromtContainer({ suggestions }) {
     </Box>
   );
 }
-
-PromtContainer.propTypes = {
-  suggestions: propTypes.arrayOf(propTypes.string),
-};
-
-PromtContainer.defaultProps = {
-  suggestions: [],
-};
 
 export default memo(PromtContainer);

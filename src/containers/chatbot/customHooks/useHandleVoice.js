@@ -1,10 +1,12 @@
 import moment from 'moment';
 import { useCallback, useRef, useState } from 'react';
+import { useGlobalContext } from '../context/GlobalContext';
 
-const useHandleVoice = (socketRef, setChatMessages, setLoading, setRecentQuery) => {
+const useHandleVoice = () => {
   const mediaRecorder = useRef(null);
   const [isVoiceRecording, setVoiceRecording] = useState(false);
   const [audioBlob, setAudioBlob] = useState(null);
+  const { setChatMessages, setRecentQuery, setLoading, socket } = useGlobalContext();
 
   const handleStartRecording = useCallback(async () => {
     let options = {};
@@ -23,7 +25,7 @@ const useHandleVoice = (socketRef, setChatMessages, setLoading, setRecentQuery) 
       if (event.data.size > 0) {
         setAudioBlob(event.data);
 
-        socketRef.current?.send(event.data);
+        socket?.send(event.data);
         setChatMessages(prevState => [
           ...prevState,
           { query: URL.createObjectURL(event.data), type: 'audio', timestamp: moment().format('hh:mm A') },
@@ -36,7 +38,7 @@ const useHandleVoice = (socketRef, setChatMessages, setLoading, setRecentQuery) 
 
     mediaRecorder.current.start();
     setVoiceRecording(true);
-  }, [socketRef]);
+  }, [socket]);
 
   const handleStopRecording = useCallback(() => {
     if (mediaRecorder.current && mediaRecorder.current.state === 'recording') {

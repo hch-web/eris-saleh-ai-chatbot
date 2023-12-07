@@ -4,7 +4,6 @@ export const pageInitState = {
   isCompletePage: false,
   isMaximizedPage: false,
   isSettingDrawerOpen: false,
-  isHumanAgentPage: false,
   isChatDialogOpen: false,
 };
 
@@ -67,14 +66,13 @@ export const pagesReducers = (state, action) => {
         isSettingDrawerOpen: !state.isSettingDrawerOpen,
       };
 
-    case 'OPEN_HUMAN_PAGE':
-      return {
-        ...state,
-        isChatPage: false,
-        isFeedbackPage: false,
-        isHumanAgentPage: true,
-        isSettingDrawerOpen: false,
-      };
+      // case 'OPEN_HUMAN_PAGE':
+      //   return {
+      //     ...state,
+      //     isChatPage: true,
+      //     isFeedbackPage: false,
+      //     isSettingDrawerOpen: false,
+      //   };
 
     default:
       return state;

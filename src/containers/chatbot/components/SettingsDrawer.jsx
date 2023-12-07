@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import {
   Close,
   DeleteOutlined,
@@ -157,4 +157,4 @@ SettingsDrawer.defaultProps = {
   chatMessages: [],
 };
 
-export default SettingsDrawer;
+export default memo(SettingsDrawer);

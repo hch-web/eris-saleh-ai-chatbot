@@ -1,24 +1,30 @@
-import { useReducer, useState } from 'react';
+import { useCallback, useReducer, useState } from 'react';
+import { getHumanAgentSocketURL } from 'utilities/constants';
 import { pageInitState, pagesReducers } from '../utilities/reducers';
+import { useGlobalContext } from '../context/GlobalContext';
 
-const useChatHandlers = (
-  socketRef,
-  chatMessages,
-  isOpen,
-  handleCloseChat,
-  recentQuery,
-  setLoading,
-  setChatMessages
-) => {
+const useChatHandlers = () => {
   const [textSize, setTextSize] = useState(14);
   const [pagesState, dispatchPageState] = useReducer(pagesReducers, pageInitState);
   const { isChatPage, isFeedbackPage, isCompletePage } = pagesState;
+
+  const {
+    chatMessages,
+    toggleChatBox,
+    setChatMessages,
+    isChatOpen,
+    setLoading,
+    recentQuery,
+    socket,
+    setSocket,
+    setHumanAgent,
+  } = useGlobalContext();
 
   const handleClose = () => {
     // OPEN FEEDBACK PAGE
     if (isChatPage && chatMessages?.length === 1) {
       dispatchPageState({ type: 'CLOSE_COMPLETE' });
-      handleCloseChat();
+      toggleChatBox();
       return;
     }
 
@@ -34,9 +40,9 @@ const useChatHandlers = (
     }
 
     // CLOSE CHAT
-    if (isCompletePage && isOpen) {
+    if (isCompletePage && isChatOpen) {
       dispatchPageState({ type: 'CLOSE_COMPLETE' });
-      handleCloseChat();
+      toggleChatBox();
     }
   };
 
@@ -52,9 +58,9 @@ const useChatHandlers = (
     const blockMsg = document.getElementById('_end-block-message');
     setLoading(true);
     if (recentQuery?.type === 'audio') {
-      socketRef.current?.send(recentQuery.query);
+      socket.send(recentQuery.query);
     } else {
-      socketRef.current?.send(JSON.stringify({ query: recentQuery.message, type: 'text' }));
+      socket.send(JSON.stringify({ query: recentQuery.message, type: 'text' }));
     }
     blockMsg.scrollIntoView({ behavior: 'smooth' });
   };
@@ -68,6 +74,17 @@ const useChatHandlers = (
     dispatchPageState({ type: 'CHAT_DIALOG_CLOSE' });
   };
 
+  const handleConnectHumanAgent = useCallback(() => {
+    const humanAgentSocket = new WebSocket(getHumanAgentSocketURL());
+    const newChatMessages = [...chatMessages];
+    newChatMessages.push({ type: 'DIVIDER', message: 'Human Agent connected!' });
+
+    dispatchPageState({ type: 'BACK_TO_CHAT' });
+    setChatMessages(newChatMessages);
+    setSocket(humanAgentSocket);
+    setHumanAgent(true);
+  }, [chatMessages, socket]);
+
   return {
     textSize,
     handleClearChat,
@@ -78,6 +95,7 @@ const useChatHandlers = (
     handleClose,
     dispatchPageState,
     pagesState,
+    handleConnectHumanAgent,
   };
 };
 

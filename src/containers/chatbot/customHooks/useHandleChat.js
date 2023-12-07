@@ -1,62 +1,64 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import moment from 'moment';
 import { getVoiceAudio } from 'containers/services/chat';
-import { chatPrompts } from '../utilities/data';
+import { useGlobalContext } from '../context/GlobalContext';
 
-const useHandleChat = (socketRef, chatMessages, setChatMessages, setLoading) => {
-  const [suggestions, setSuggestions] = useState(chatPrompts);
+const useHandleChat = () => {
+  const { setChatMessages, chatMessages, setLoading, socket, isHumanAgent, setSuggestions } =
+    useGlobalContext();
 
   useEffect(() => {
-    const socket = socketRef.current;
-
-    // if (socket) {
-    //   socket.onmessage = e => {
-    //     const data = JSON.parse(e.data);
-
-    //     if ('answer' in data) {
-    //       setChatMessages(prevState => [...prevState, { ...data, timestamp: moment().format('hh:mm A') }]);
-    //       setLoading(false);
-    //     }
-    //     if ('suggestion' in data) {
-    //       setSuggestions(data.suggestion);
-    //     }
-    //   };
-    // }
-
     if (socket) {
       socket.onmessage = async e => {
         const data = JSON.parse(e.data);
 
-        if ('answer' in data) {
+        if (isHumanAgent) {
           const messageObj = {
-            answer: data?.answer,
             timestamp: moment().format('hh:mm A'),
-            isQuery: false,
+            isQuery: data?.message_from === 'Human',
             type: 'text',
             audio: null,
-            message_id: data?.message_id,
+            message_id: data?.id,
+            ...(data?.message_from === 'Human'
+              ? { query: data?.text_message }
+              : {
+                answer: data?.text_message,
+              }),
           };
 
           setChatMessages(prevState => [...prevState, messageObj]);
-          setLoading(false);
+        } else {
+          if ('answer' in data) {
+            const messageObj = {
+              answer: data?.answer,
+              timestamp: moment().format('hh:mm A'),
+              isQuery: false,
+              type: 'text',
+              audio: null,
+              message_id: data?.message_id,
+            };
 
-          const audioFile = await getVoiceAudio(data?.answer);
+            setChatMessages(prevState => [...prevState, messageObj]);
+            setLoading(false);
 
-          setChatMessages(prevState => {
-            const updatedMessages = [...prevState];
-            const lastMessage = updatedMessages.at(-1);
-            lastMessage.audio = audioFile?.file;
+            const audioFile = await getVoiceAudio(data?.answer);
 
-            return updatedMessages;
-          });
-        }
+            setChatMessages(prevState => {
+              const updatedMessages = [...prevState];
+              const lastMessage = updatedMessages.at(-1);
+              lastMessage.audio = audioFile?.file;
 
-        if ('suggestion' in data) {
-          setSuggestions(data.suggestion);
+              return updatedMessages;
+            });
+          }
+
+          if ('suggestion' in data) {
+            setSuggestions(data.suggestion);
+          }
         }
       };
     }
-  }, [socketRef]);
+  }, [socket, isHumanAgent]);
 
   useEffect(() => {
     if (chatMessages?.length > 0) {
@@ -65,7 +67,7 @@ const useHandleChat = (socketRef, chatMessages, setChatMessages, setLoading) => 
     }
   }, [chatMessages]);
 
-  return { suggestions };
+  return null;
 };
 
 export default useHandleChat;

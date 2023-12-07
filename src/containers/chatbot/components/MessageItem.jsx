@@ -13,25 +13,16 @@ import {
   msgRespButtonStyles,
 } from '../utilities/styles';
 import useHandleVoicePlayback from '../customHooks/useHandleVoicePlayback';
+import { useGlobalContext } from '../context/GlobalContext';
 
-function MessageItem({
-  query,
-  answer,
-  type,
-  time,
-  isLast,
-  handleRegenerate,
-  isFirst,
-  setBtnsDisabled,
-  messageId,
-  audio,
-}) {
+function MessageItem({ query, answer, type, time, isLast, handleRegenerate, isFirst, messageId, audio }) {
   const [isAnimationCompleted, setAnimationCompleted] = useState(!!query);
   const [msgFeedback, setMsgFeedback] = useState(null);
   const [isRegenerating, setRegenerating] = useState(false);
   const isSentByMe = !!query;
   const isAudio = type === 'audio';
 
+  const { setBtnsDisabled, isHumanAgent } = useGlobalContext();
   const { handleStopResponse } = useHandleVoicePlayback(audio, setAnimationCompleted);
 
   useEffect(() => {
@@ -109,7 +100,7 @@ function MessageItem({
           )}
         </Box>
 
-        {!isSentByMe && isAnimationCompleted && !isFirst && (
+        {!isSentByMe && isAnimationCompleted && !isFirst && !isHumanAgent && (
           <Stack direction="row" alignItems="center" justifyContent="flex-end" flexGrow={1}>
             <IconButton
               sx={{ color: isRespBad ? 'primary.main' : 'currentcolor' }}
@@ -136,7 +127,7 @@ function MessageItem({
         )}
       </Stack>
 
-      {!isFirst && (
+      {!isFirst && !isHumanAgent && (
         <Stack sx={disableSelection} direction="row" gap={2}>
           {!isAnimationCompleted && !isSentByMe && (
             <Button variant="outlined" size="small" sx={msgRespButtonStyles} onClick={handleStopResponse}>
@@ -170,7 +161,6 @@ MessageItem.propTypes = {
   isLast: propTypes.bool,
   isFirst: propTypes.bool,
   handleRegenerate: propTypes.func,
-  setBtnsDisabled: propTypes.func,
   messageId: propTypes.number,
   audio: propTypes.string,
 };
@@ -183,7 +173,6 @@ MessageItem.defaultProps = {
   isLast: false,
   isFirst: false,
   handleRegenerate: () => {},
-  setBtnsDisabled: () => {},
   messageId: null,
   audio: null,
 };

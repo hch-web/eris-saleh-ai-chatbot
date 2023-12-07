@@ -11,7 +11,6 @@ function FormikField({ name, onChange, placeholder, disabled }) {
   const [field, meta] = useField(name || '');
   const { value, onChange: onValueChange, ...resetFieldProps } = field;
   const { error, touched } = meta;
-  // const [rows, setRows] = useState(1);
 
   const handleChange = useCallback(e => {
     onValueChange(e);
