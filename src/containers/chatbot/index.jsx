@@ -19,6 +19,10 @@ function ChatBot() {
 
   const toggleChatBox = () => {
     setIsChatOpen(!isChatOpen);
+
+    if (chatMessages?.length > 0) {
+      setChatMessages([]);
+    }
   };
 
   const contextValue = useMemo(
